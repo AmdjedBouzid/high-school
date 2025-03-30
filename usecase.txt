@@ -1,0 +1,16 @@
+parent :
+1-create acount :{------}
+2-insert  student
+3-track students :{}
+
+food manager:{
+    see number of students apsent
+}
+
+administrator:{
+0-auth    
+1-tracking actions (logs)
+2-create author administrator
+3-set,access , update, apsents 
+4-add, delete, students
+}

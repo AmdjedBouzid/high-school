@@ -4,17 +4,17 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Role;
+use App\Models\SupervisorInfo;
 use App\Models\User;
 
-class UserFactory extends Factory
+class SupervisorInfoFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = SupervisorInfo::class;
 
     /**
      * Define the model's default state.
@@ -22,11 +22,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'first_name' => fake()->firstName(),
-            'last_name' => fake()->lastName(),
-            'email' => fake()->safeEmail(),
-            'password' => fake()->password(),
-            'role_id' => Role::factory(),
+            'user_id' => User::factory(),
+            'phone_number' => fake()->phoneNumber(),
+            'sexe' => fake()->randomElement(["M","F"]),
+            'address' => fake()->word(),
         ];
     }
 }

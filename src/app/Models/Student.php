@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class User extends Model
+class Student extends Model
 {
     use HasFactory;
 
@@ -18,18 +18,10 @@ class User extends Model
     protected $fillable = [
         'first_name',
         'last_name',
-        'email',
-        'password',
-        'role_id',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
+        'class',
+        'code',
+        'record_status_id',
+        'student_type_id',
     ];
 
     /**
@@ -39,11 +31,17 @@ class User extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'role_id' => 'integer',
+        'record_status_id' => 'integer',
+        'student_type_id' => 'integer',
     ];
 
-    public function role(): BelongsTo
+    public function recordStatus(): BelongsTo
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(RecordStatus::class);
+    }
+
+    public function studentType(): BelongsTo
+    {
+        return $this->belongsTo(StudentType::class);
     }
 }

@@ -4,17 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Role;
-use App\Models\User;
+use App\Models\RecordStatus;
+use App\Models\Student;
+use App\Models\StudentType;
 
-class UserFactory extends Factory
+class StudentFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = Student::class;
 
     /**
      * Define the model's default state.
@@ -24,9 +25,10 @@ class UserFactory extends Factory
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
-            'email' => fake()->safeEmail(),
-            'password' => fake()->password(),
-            'role_id' => Role::factory(),
+            'class' => fake()->word(),
+            'code' => fake()->word(),
+            'record_status_id' => RecordStatus::factory(),
+            'student_type_id' => StudentType::factory(),
         ];
     }
 }
