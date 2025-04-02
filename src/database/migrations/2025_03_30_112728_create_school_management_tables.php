@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('last_name', 100);
             $table->string('username', 30)->unique();
             $table->string('email', 255)->unique();
-            $table->string('password', 255);
+            $table->string('password', 255)->nullable();
             $table->foreignId('role_id')->nullable()->constrained('role')->onDelete('set null');
             $table->timestamps();
         });
