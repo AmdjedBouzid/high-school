@@ -20,7 +20,7 @@ class Student extends Model
         'last_name',
         'class',
         'code',
-        'record_status_id',
+        'student_state_id',
         'student_type_id',
     ];
 
@@ -31,13 +31,13 @@ class Student extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'record_status_id' => 'integer',
+        'student_state_id' => 'integer',
         'student_type_id' => 'integer',
     ];
 
-    public function recordStatus(): BelongsTo
+    public function studentState(): BelongsTo
     {
-        return $this->belongsTo(RecordStatus::class);
+        return $this->belongsTo(StudentState::class);
     }
 
     public function studentType(): BelongsTo
