@@ -11,64 +11,64 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
             $table->timestamps();
         });
 
-        Schema::create('user', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('first_name', 100);
             $table->string('last_name', 100);
             $table->string('username', 30)->unique();
             $table->string('email', 255)->unique();
             $table->string('password', 255)->nullable();
-            $table->foreignId('role_id')->nullable()->constrained('role')->onDelete('set null');
+            $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('set null');
             $table->timestamps();
         });
 
-        Schema::create('supervisor_info', function (Blueprint $table) {
+        Schema::create('supervisor_infos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('phone_number', 20)->nullable();
             $table->string('address', 255)->nullable();
             $table->enum('sexe', ['M', 'F']);
             $table->timestamps();
         });
 
-        Schema::create('student_state', function (Blueprint $table) {
+        Schema::create('student_states', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
         });
 
-        Schema::create('student_type', function (Blueprint $table) {
+        Schema::create('student_types', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
         });
 
-        Schema::create('student', function (Blueprint $table) {
+        Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('first_name', 100);
             $table->string('last_name', 100);
             $table->string('class', 50);
             $table->string('code', 50)->unique();
-            $table->foreignId('student_state_id')->nullable()->constrained('student_state')->onDelete('set null');
-            $table->foreignId('student_type_id')->nullable()->constrained('student_type')->onDelete('set null');
+            $table->foreignId('student_state_id')->nullable()->constrained('student_states')->onDelete('set null');
+            $table->foreignId('student_type_id')->nullable()->constrained('student_types')->onDelete('set null');
             $table->timestamp('created_at')->useCurrent();
             $table->softDeletes();
         });
 
-        Schema::create('student_supervisor', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
-            $table->foreignId('student_id')->constrained('student')->onDelete('cascade');
+        Schema::create('student_supervisors', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->timestamp('created_at')->useCurrent();
             $table->primary(['user_id', 'student_id']);
         });
 
-        Schema::create('absence', function (Blueprint $table) {
+        Schema::create('absences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('student')->onDelete('cascade');
+            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->date('day');
             $table->string('class_index', 50);
         });
@@ -80,13 +80,13 @@ return new class extends Migration
     public function down(): void
     {
         // Drop tables in reverse order to respect foreign key constraints
-        Schema::dropIfExists('absence');
-        Schema::dropIfExists('student_supervisor');
-        Schema::dropIfExists('student');
-        Schema::dropIfExists('student_type');
-        Schema::dropIfExists('student_state');
-        Schema::dropIfExists('supervisor_info');
-        Schema::dropIfExists('user');
-        Schema::dropIfExists('role');
+        Schema::dropIfExists('absences');
+        Schema::dropIfExists('student_supervisors');
+        Schema::dropIfExists('students');
+        Schema::dropIfExists('student_types');
+        Schema::dropIfExists('student_states');
+        Schema::dropIfExists('supervisor_infos');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('roles');
     }
 };
