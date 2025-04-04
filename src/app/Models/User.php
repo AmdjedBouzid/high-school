@@ -1,15 +1,14 @@
 <?php
 
 namespace App\Models;
-
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-class User extends Model
+use Illuminate\Foundation\Auth\User as Authenticatable;
+class User extends Authenticatable
 {
-    use HasFactory;
-
+    use HasApiTokens, HasFactory;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -20,7 +19,8 @@ class User extends Model
         'last_name',
         'username',
         'email',
-        'role_id',
+        'role_id','password',
+       
     ];
 
     /**
