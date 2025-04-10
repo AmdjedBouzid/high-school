@@ -26,14 +26,16 @@ return new class extends Migration
             $table->string('password', 255)->nullable();
             $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('set null');
             $table->timestamps();
+            $table->softDeletes();
         });
-
+        
         Schema::create('supervisor_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('phone_number', 20)->nullable();
             $table->string('address', 255)->nullable();
             $table->enum('sexe', ['M', 'F']);
+            $table->softDeletes();
             $table->timestamps();
         });
 

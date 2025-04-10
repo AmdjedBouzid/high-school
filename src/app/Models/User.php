@@ -3,12 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
 
 class User extends Model
 {
-    use HasFactory;
+    use SoftDeletes, HasApiTokens, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +25,7 @@ class User extends Model
         'last_name',
         'username',
         'email',
+        'password',
         'role_id',
     ];
 
@@ -46,9 +52,33 @@ class User extends Model
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function supervisorInfo()
+    {
+        return $this->hasOne(SupervisorInfo::class);
+    }
     
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = bcrypt($value);
+        if ($value !== null) {
+            $this->attributes['password'] = Hash::make($value);
+        }
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::deleting(function($user) {
+            if ($user->isForceDeleting()) {
+                $user->supervisorInfo()->forceDelete();
+            } else {
+                $user->supervisorInfo()->delete();
+            }
+        });
+        
+        static::restoring(function($user) {
+            $user->supervisorInfo()->withTrashed()->restore();
+        });
     }
 }
