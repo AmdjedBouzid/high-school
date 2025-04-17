@@ -19,10 +19,10 @@ class SupervisorController extends Controller
     public function index()
     {
         $supervisors = User::with(['supervisorInfo', 'role'])
-        ->whereHas('role', function($q) {
-            $q->where('name', 'supervisor');
-        })->get();
-        
+            ->whereHas('role', function ($q) {
+                $q->where('name', 'supervisor');
+            })->get();
+
         return SupervisorResource::collection($supervisors);
     }
 
