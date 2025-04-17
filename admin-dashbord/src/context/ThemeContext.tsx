@@ -3,6 +3,7 @@
 import type React from "react";
 import { createContext, useState, useContext, useEffect } from "react";
 import { User, Theme, ThemeContextType } from "../utils/types";
+import { getCurrentUser } from "../utils/functions";
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -10,6 +11,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [employees, setEmployees] = useState<User[]>([]);
+  useEffect(() => {
+    const fetchGlobalData = async () => {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+    };
+    fetchGlobalData();
+  }, []);
+  const [toDeleteOrUpdateEmployeeId, setToDeleteOrUpdateEmployeeId] =
+    useState<number>(-1);
 
   /**
    * Theme Management:
@@ -47,7 +58,18 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   //........................................................................................
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, user, setUser }}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        toggleTheme,
+        user,
+        setUser,
+        employees,
+        setEmployees,
+        toDeleteOrUpdateEmployeeId,
+        setToDeleteOrUpdateEmployeeId,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

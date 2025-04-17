@@ -1,14 +1,17 @@
 <?php
 
 namespace App\Models;
+
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -19,8 +22,8 @@ class User extends Authenticatable
         'last_name',
         'username',
         'email',
-        'role_id','password',
-       
+        'role_id',
+        'password',
     ];
 
     /**
@@ -46,9 +49,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
-    
+
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = bcrypt($value);
+        $this->attributes['password'] = Hash::make($value);
     }
 }

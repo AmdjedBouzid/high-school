@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\loginRequest;
+use App\Http\Resources\LoginResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -12,29 +13,18 @@ use PhpParser\Node\Stmt\TryCatch;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(loginRequest $request)
     {
-        $request->validate([
-            'login' => 'required', 
-            'password' => 'required'
-        ]);
-    
         $user = User::where('email', $request->login)
-                    ->orWhere('username', $request->login)
-                    ->first();
-    
+            ->orWhere('username', $request->login)
+            ->with(['role:id,name'])
+            ->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-    
-        $token = $user->createToken($request->userAgent() ?? 'api-token')->plainTextToken;
-    
-        return response()->json([
-            'token' => $token,
-            'user' => $user
-        ]);
+        return response()->json((new LoginResource($user))->toArray(request()));
     }
-    
+
 
     public function logout(Request $request)
     {

@@ -33,6 +33,7 @@ class UserController extends Controller
                 'username' => $request->username,
                 'email' => $request->email,
                 'role_id' => $superAdminRole->id,
+                'password' => $request->password
             ]);
             $admin->password = $request->password;
             $admin->save();
@@ -46,9 +47,27 @@ class UserController extends Controller
             ], 500);
         }
     }
-     public   function getProfile(Request $request) {
+    public function getProfile(Request $request)
+    {
         try {
-            return response()->json([$request->user()]);
+            $user = User::with('role')->where('role_id', 1)->findOrFail($request->user()->id);
+
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            $userData = [
+                'id' => $user->id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role?->name,
+                'created_at' => $user->created_at->format('Y-m-d H:i:s'),
+                'updated_at' => $user->updated_at->format('Y-m-d H:i:s'),
+            ];
+
+            return response()->json($userData);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
