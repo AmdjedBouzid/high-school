@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class StudentState extends Model
 {
@@ -17,6 +18,8 @@ class StudentState extends Model
         'name',
     ];
 
+    public $timestamps = false;
+    
     /**
      * The attributes that should be cast to native types.
      *

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\Student;
 
 
 class User extends Model
@@ -56,6 +56,11 @@ class User extends Model
     public function supervisorInfo()
     {
         return $this->hasOne(SupervisorInfo::class);
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_supervisors');
     }
     
     public function setPasswordAttribute($value)

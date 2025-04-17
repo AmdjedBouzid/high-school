@@ -13,7 +13,7 @@ Authorization: Bearer 5|UFLOr45JHGX2RLF9BNP1XVBQS6DMTt7bYxKgJ7Ae9ad07e65
 GET  http://127.0.0.1:8000/api/supervisors HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|g2Pw7XR7fqLvWXp67u1OvIg3B4I5kdjxILs3QLNC863ab2d7
+Authorization: Bearer 2|QbCnEtvl36b2Q3ffA9BKcfNU5IzBc7tADqk0mzbJ34b0c4d6
 
 {
 
@@ -50,4 +50,15 @@ Authorization: Bearer 5|UFLOr45JHGX2RLF9BNP1XVBQS6DMTt7bYxKgJ7Ae9ad07e65
 
 {
     "username": "22"
+}
+
+
+
+###
+DELETE http://127.0.0.1:8000/api/supervisor/2 HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 2|QbCnEtvl36b2Q3ffA9BKcfNU5IzBc7tADqk0mzbJ34b0c4d6
+
+{
 }

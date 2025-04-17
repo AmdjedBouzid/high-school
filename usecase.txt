@@ -1,7 +1,7 @@
 parent :
 1-create acount :{------}
-2-insert  student
-3-track students :{}
+2-insert student
+3-track students : {}
 
 food manager:{
     see number of students apsent

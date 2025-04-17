@@ -13,9 +13,6 @@ use App\Http\Resources\SupervisorResource;
 
 class SupervisorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $supervisors = User::with(['supervisorInfo', 'role'])
@@ -26,9 +23,6 @@ class SupervisorController extends Controller
         return SupervisorResource::collection($supervisors);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(SupervisorCreateRequest $request)
     {
         $user = User::create([
@@ -53,23 +47,16 @@ class SupervisorController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $supervisor)
     {
         return new SupervisorResource($supervisor->load(['supervisorInfo', 'role']));
     }
 
-    // ! Checked
     public function profile(Request $request)
     {
         return new SupervisorResource($request->user()->load(['supervisorInfo', 'role']));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(SupervisorUpdateRequest $request, User $supervisor)
     {
         $supervisor->update($request->validated());
@@ -82,12 +69,12 @@ class SupervisorController extends Controller
         return new SupervisorResource($supervisor->load(['role', 'supervisorInfo']));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $user)
     {
         $user->delete();
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        
+        return response()->json([
+            'message' => 'Supervisor deleted successfully.'
+        ], 204);
     }
 }

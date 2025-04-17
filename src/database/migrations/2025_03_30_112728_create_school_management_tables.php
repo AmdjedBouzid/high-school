@@ -32,7 +32,7 @@ return new class extends Migration
         Schema::create('supervisor_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('phone_number', 20)->nullable();
+            $table->string('phone_number', 10)->nullable();
             $table->string('address', 255)->nullable();
             $table->enum('sexe', ['M', 'F']);
             $table->softDeletes();
@@ -55,17 +55,18 @@ return new class extends Migration
             $table->string('last_name', 100);
             $table->string('class', 50);
             $table->string('code', 50)->unique();
+            $table->foreignId('inserted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('student_state_id')->nullable()->constrained('student_states')->onDelete('set null');
             $table->foreignId('student_type_id')->nullable()->constrained('student_types')->onDelete('set null');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
             $table->softDeletes();
         });
-
+        
         Schema::create('student_supervisors', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
-            $table->timestamp('created_at')->useCurrent();
             $table->primary(['user_id', 'student_id']);
+            $table->softDeletes();
         });
 
         Schema::create('absences', function (Blueprint $table) {

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 
 class SupervisorUpdateRequest extends FormRequest
@@ -19,9 +20,9 @@ class SupervisorUpdateRequest extends FormRequest
         $rules = [];
         
         if ($this->has('id')) {
-            abort(422, 'Direct ID modification is not allowed');
+            abort(422, 'ID modification is not allowed');
         }
-        if ($this->has('role_id') && strtolower($this->user()->role->name) !== 'super admin') {
+        if ($this->has('role_id') && Gate::denies('admin-level')) {
             abort(403, 'You are not authorized to change the role');
         }
         
