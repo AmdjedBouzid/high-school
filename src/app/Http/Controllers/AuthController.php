@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\loginRequest;
-use App\Http\Resources\LoginResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -22,7 +22,26 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-        return response()->json((new LoginResource($user))->toArray(request()));
+
+        if ($user->role_id == 1) {
+            $abilities = ['crud-employees'];
+        } elseif ($user->role_id == 2) {
+            $abilities = [];
+        } elseif ($user->role_id == 3) {
+            $abilities = [];
+        } else {
+            $abilities = [];
+        }
+
+        $token = $user->createToken(
+            $request->userAgent() ?? 'api-token',
+            $abilities
+        )->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => new UserResource($user)
+        ]);
     }
 
 
