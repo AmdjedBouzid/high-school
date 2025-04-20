@@ -4,35 +4,64 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController; // Verify that this class exists in the specified namespace or create it if missing
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
-use App\Http\Controllers\EmployeeController;
+use App\Models\User;
 use App\Http\Controllers\SupervisorAccount\SupervisorController;
+use App\Http\Controllers\Student\StudentController;
 
+Route::post('/create-supervisor', [SupervisorController::class, 'store'])->name('user.supervisor.create');
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'getProfile']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-Route::post('/create-admin', [UserController::class, 'insertAdmin']);
+Route::post('/sanctum/token', function (Request $request) {
+    $request->validate([
+        'username' => 'sometimes',
+        'email' => 'sometimes|email',
+        'password' => 'required',
+        'device_name' => 'required',
+    ]);
 
+    $user = User::where('username', $request->username)->orWhere('email', $request->email)->first();
 
+    if (! $user) {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.'],
+            'username' => ['The provided credentials are incorrect.'],
+        ]);
+    }
+    if (! Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'password' => ['Wrong password.'],
+        ]);
+    }
 
-Route::middleware(['auth:sanctum', 'abilities:crud-employees'])
-    ->prefix('employees')
-    ->group(function () {
-        Route::get('/', [EmployeeController::class, 'getEmployees']);
-        Route::post('/', [EmployeeController::class, 'addEmployee']);
-        Route::get('{id}', [EmployeeController::class, 'getEmployeeById']);
-        Route::put('{id}', [EmployeeController::class, 'updateEmployee']);
-        Route::delete('{id}', [EmployeeController::class, 'deleteEmployee']);
-    });
+    return $user->createToken($request->device_name)->plainTextToken;
+});
 
+Route::middleware('auth:sanctum')->group(function () {
+    // ! Supervisor
 
-Route::middleware(['auth:sanctum', 'abilities:crud-supervisor'])
-    ->prefix('supervisor')
-    ->group(function () {
-        Route::post('/', [SupervisorController::class, 'store'])->name('user.supervisor.store');
-        Route::get('/', [SupervisorController::class, 'index'])->name('user.supervisor.index');
-        Route::get('/{supervisor}', [SupervisorController::class, 'show'])->name('user.supervisor.show');
-        Route::patch('/{supervisor}', [SupervisorController::class, 'update'])->name('user.supervisor.update');
-        Route::delete('/{supervisor}', [SupervisorController::class, 'destroy'])->name('user.supervisor.destroy');
-    });
+    Route::get('/profile', [SupervisorController::class, 'profile'])->name('auth.profile');
+
+    Route::get('/supervisors', [SupervisorController::class, 'index'])->name('user.supervisor.index')->middleware('can:admin-level');
+
+    Route::get('/supervisor/{supervisor}', [SupervisorController::class, 'show'])->name('user.supervisor.show')->middleware('can:admin-level');
+
+    Route::patch('/supervisor/{supervisor}', [SupervisorController::class, 'update'])->name('user.supervisor.update')->middleware('can:update-owner-level,supervisor');
+
+    Route::delete('/supervisor/{supervisor}', [SupervisorController::class, 'destroy'])->name('user.supervisor.destroy')->middleware('can:admin-level');
+
+    // ! Student
+
+    Route::post('/create-student', [StudentController::class, 'store'])->name('student.create')->middleware('can:admin-level');
+
+    Route::get('/students', [StudentController::class, 'index'])->name('student.index')->middleware('can:admin-level');
+
+    Route::get('/student/{student}', [StudentController::class, 'show'])->name('student.show')->middleware('can:admin-level');
+
+    Route::patch('/student/{student}', [StudentController::class, 'update'])->name('student.update')->middleware('can:admin-level');
+
+    Route::delete('/student/{student}', [StudentController::class, 'destroy'])->name('student.destroy')->middleware('can:admin-level');
+
+    Route::get('/deleted', [StudentController::class, 'deletedStudents'])->name('student.deleted')->middleware('can:admin-level');
+});

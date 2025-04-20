@@ -18,6 +18,8 @@ class StudentType extends Model
         'name',
     ];
 
+    public $timestamps = false;
+    
     /**
      * The attributes that should be cast to native types.
      *

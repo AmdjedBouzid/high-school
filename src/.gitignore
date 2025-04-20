@@ -43,5 +43,3 @@ nova/
 # Ignore logs and debug files
 npm-debug.log
 yarn-debug.log
-
-/database/seeders

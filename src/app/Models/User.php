@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use App\Models\Student;
 
 
 class User extends Authenticatable
@@ -58,6 +59,11 @@ class User extends Authenticatable
     public function supervisorInfo()
     {
         return $this->hasOne(SupervisorInfo::class);
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_supervisors');
     }
 
     public function setPasswordAttribute($value)
