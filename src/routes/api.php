@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Http\Controllers\SupervisorAccount\SupervisorController;
 use App\Http\Controllers\Student\StudentController;
+use App\Http\Controllers\EmployeeController; // Add this line to import the EmployeeController
 
 Route::post('/create-supervisor', [SupervisorController::class, 'store'])->name('user.supervisor.create');
 
@@ -37,7 +38,15 @@ Route::post('/sanctum/token', function (Request $request) {
 
     return $user->createToken($request->device_name)->plainTextToken;
 });
-
+Route::middleware(['auth:sanctum', 'abilities:crud-employees'])
+    ->prefix('employees')
+    ->group(function () {
+        Route::get('/', [EmployeeController::class, 'getEmployees']);
+        Route::post('/', [EmployeeController::class, 'addEmployee']);
+        Route::get('{id}', [EmployeeController::class, 'getEmployeeById']);
+        Route::put('{id}', [EmployeeController::class, 'updateEmployee']);
+        Route::delete('{id}', [EmployeeController::class, 'deleteEmployee']);
+    });
 Route::middleware('auth:sanctum')->group(function () {
     // ! Supervisor
 

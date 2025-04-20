@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use App\Models\User;
+use App\Models\User; // Ensure the User model exists in this namespace. If not, update the namespace accordingly.
 
 class AppServiceProvider extends ServiceProvider
 {
