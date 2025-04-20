@@ -1,4 +1,9 @@
 import { app, BrowserWindow } from "electron";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let mainWindow;
 
@@ -11,11 +16,11 @@ const createWindow = () => {
     },
   });
 
-  if (process.env.ELECTRON_START_URL) {
-    mainWindow.loadURL(process.env.ELECTRON_START_URL);
-  } else {
-    mainWindow.loadFile("build/index.html");
-  }
+  const startUrl =
+    process.env.ELECTRON_START_URL ||
+    `file://${path.join(__dirname, "../dist/index.html")}`;
+  console.log("🔗 Loading URL:", startUrl);
+  mainWindow.loadURL(startUrl);
 
   mainWindow.on("closed", () => {
     mainWindow = null;

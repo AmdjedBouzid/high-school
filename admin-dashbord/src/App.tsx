@@ -19,13 +19,15 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import { useTheme } from "./context/ThemeContext";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import EmployeesPage from "./pages/EmployeesPage";
+import SupervisorsPage from "./pages/SupervisorsPage";
+import SupervisorDetailsPage from "./pages/SupervisorDetailsPage";
 
 export default function App() {
   const { user } = useTheme();
-  const { setUser } = useTheme();
+  // const { setUser } = useTheme();
   console.log("user", user?.role === "super-admin");
   // useEffect((setUser()) => {}, []);
 
@@ -64,7 +66,11 @@ export default function App() {
 
               <Route path="/line-chart" element={<LineChart />} />
               <Route path="/bar-chart" element={<BarChart />} />
-              <Route path="/employees" element={<EmployeesPage />} />
+              <Route path="/supervisor" element={<SupervisorsPage />} />
+              <Route
+                path="/supervisor/:id"
+                element={<SupervisorDetailsPage />}
+              />
               {user.role === "super-admin" && (
                 <Route path="/employees" element={<EmployeesPage />} />
               )}

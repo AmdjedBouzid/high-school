@@ -3,31 +3,42 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import Button from "../button/Button";
 // import { useModal } from "../../../hooks/useModal";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, ChevronDown } from "lucide-react";
 import { EyeCloseIcon } from "../../../icons";
 import { toast } from "react-toastify";
 import { useTheme } from "../../../context/ThemeContext";
 import axiosInstance from "../../../utils/Interceptor";
-import { User } from "../../../utils/types";
+import {
+  //   Supervisor,
+  //   supervisorArrayResponse,
+  supervisorResponse,
+} from "../../../utils/types";
 import Loader from "../../myComponnets/Loader";
 interface closeModalProps {
   closeModal1: () => void;
   action: "add" | "edit";
 }
 
-function AddEmployeeModal({ closeModal1, action }: closeModalProps) {
+function AddSupervisorModal({ closeModal1, action }: closeModalProps) {
+  const { supervisors, setSupervisors } = useTheme();
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [adress, setAdress] = useState("");
   const [password, setPassword] = useState("");
+
+  const [sex, setSex] = useState("M");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const { toDeleteOrUpdateEmployeeId } = useTheme();
-  const { setEmployees } = useTheme();
-  const { employees } = useTheme();
-  const toEditEmp = employees.find(
-    (employee) => employee.id === toDeleteOrUpdateEmployeeId
+
+  const toEditEmp = supervisors.find(
+    (supervisors) => supervisors.id === toDeleteOrUpdateEmployeeId
   );
   const handleSave = async () => {
     try {
@@ -38,27 +49,31 @@ function AddEmployeeModal({ closeModal1, action }: closeModalProps) {
       formData.append("email", email);
       formData.append("username", username);
       formData.append("password", password);
+      formData.append("phone_number", phoneNumber);
+      formData.append("password_confirmation", passwordConfirmation);
+      formData.append("sexe", sex);
+      formData.append("address", adress);
 
       if (action === "add") {
-        const response = await axiosInstance.post("/employees", formData);
+        const response = await axiosInstance.post("/supervisor", formData);
         if (response.status === 201) {
-          const newEmployee = (response.data as { user: User }).user;
-          setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
-          console.log("newEmployee", newEmployee);
+          const responseData = response.data as supervisorResponse;
+          const newSupervisor = responseData.data;
+          setSupervisors((prev) => [...prev, newSupervisor]);
         }
       } else {
-        const response = await axiosInstance.put(
-          `/employees/${toDeleteOrUpdateEmployeeId}`,
-          formData
-        );
-        if (response.status === 200) {
-          const updatedEmployee = (response.data as { user: User }).user;
-          setEmployees((prevEmployees) =>
-            prevEmployees.map((employee) =>
-              employee.id === updatedEmployee.id ? updatedEmployee : employee
-            )
-          );
-        }
+        // const response = await axiosInstance.put(
+        //   `/employees/${toDeleteOrUpdateEmployeeId}`,
+        //   formData
+        // );
+        // if (response.status === 200) {
+        //   const updatedEmployee = (response.data as { user: User }).user;
+        //   setEmployees((prevEmployees) =>
+        //     prevEmployees.map((employee) =>
+        //       employee.id === updatedEmployee.id ? updatedEmployee : employee
+        //     )
+        //   );
+        // }
       }
 
       closeModal1();
@@ -75,6 +90,8 @@ function AddEmployeeModal({ closeModal1, action }: closeModalProps) {
       setLastName(toEditEmp.last_name);
       setEmail(toEditEmp.email);
       setUsername(toEditEmp.username);
+      setPhoneNumber(toEditEmp.supervisor_info.phone_number);
+      setAdress(toEditEmp.supervisor_info.address);
     }
   }, [action, toEditEmp]);
 
@@ -82,7 +99,7 @@ function AddEmployeeModal({ closeModal1, action }: closeModalProps) {
     <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11 ">
       <div className="px-2 pr-14">
         <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-          {action === "add" ? "Add New Employee" : "Edit Employee"}
+          {action === "add" ? "Add New Supervisor" : "Edit Supervisor"}
         </h4>
         <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
           all inputs are required
@@ -127,6 +144,37 @@ function AddEmployeeModal({ closeModal1, action }: closeModalProps) {
                   onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
+              <div className="col-span-2 lg:col-span-1">
+                <Label>phone Number</Label>
+                <Input
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+              <div className="col-span-2 lg:col-span-1 relative">
+                <Label>Sex</Label>
+                <select
+                  className="h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring-3 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 cursor-pointer"
+                  defaultValue="M"
+                  value={sex}
+                  onChange={(e) => setSex(e.target.value)}
+                >
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                </select>
+                <span className="pointer-events-none absolute right-3 top-10  text-gray-500 dark:text-white/60">
+                  <ChevronDown className="w-4 h-4" />
+                </span>
+              </div>
+              <div className="col-span-2 lg:col-span-1">
+                <Label>Adress</Label>
+                <Input
+                  type="text"
+                  value={adress}
+                  onChange={(e) => setAdress(e.target.value)}
+                />
+              </div>
 
               <div className="col-span-2">
                 <Label>Password</Label>
@@ -142,6 +190,29 @@ function AddEmployeeModal({ closeModal1, action }: closeModalProps) {
                     className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                   >
                     {showPassword ? (
+                      <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                    ) : (
+                      <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                    )}
+                  </span>
+                </div>
+              </div>
+              <div className="col-span-2">
+                <Label>Password confirmation</Label>
+                <div className="relative">
+                  <Input
+                    type={showPasswordConfirmation ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={passwordConfirmation}
+                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                  />
+                  <span
+                    onClick={() =>
+                      setShowPasswordConfirmation(!showPasswordConfirmation)
+                    }
+                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                  >
+                    {showPasswordConfirmation ? (
                       <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
                     ) : (
                       <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
@@ -170,4 +241,4 @@ function AddEmployeeModal({ closeModal1, action }: closeModalProps) {
   );
 }
 
-export default AddEmployeeModal;
+export default AddSupervisorModal;

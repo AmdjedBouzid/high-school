@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 
 export const AdminAvatar = () => {
   return (
@@ -31,3 +31,11 @@ export const EmployeeAvatar = () => {
     </div>
   );
 };
+
+import { UserCheck } from "lucide-react";
+
+export const SupervisorAvatar = () => (
+  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+    <UserCheck className="text-blue-600 w-8 h-8" />
+  </div>
+);

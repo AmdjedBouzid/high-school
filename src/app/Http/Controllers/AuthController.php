@@ -16,6 +16,7 @@ class AuthController extends Controller
     public function login(loginRequest $request)
     {
         $user = User::where('email', $request->login)
+            ->whereNull('deleted_at')
             ->orWhere('username', $request->login)
             ->with(['role:id,name'])
             ->first();
@@ -24,9 +25,9 @@ class AuthController extends Controller
         }
 
         if ($user->role_id == 1) {
-            $abilities = ['crud-employees'];
+            $abilities = ['crud-employees', 'crud-supervisor'];
         } elseif ($user->role_id == 2) {
-            $abilities = [];
+            $abilities = ['crud-supervisor'];
         } elseif ($user->role_id == 3) {
             $abilities = [];
         } else {

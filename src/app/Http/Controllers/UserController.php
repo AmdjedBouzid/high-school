@@ -50,7 +50,7 @@ class UserController extends Controller
     public function getProfile(Request $request)
     {
         try {
-            $user = User::with('role')->where('role_id', 1)->findOrFail($request->user()->id);
+            $user = User::with('role')->findOrFail($request->user()->id);
 
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);

@@ -6,52 +6,55 @@ import {
   TableRow,
 } from "../ui/table";
 import Button from "../ui/button/Button";
-
-import { User } from "../../utils/types";
+import { useNavigate } from "react-router";
+import { supervisorArrayResponse } from "../../utils/types";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/Interceptor";
 import { useTheme } from "../../context/ThemeContext";
 import { toast } from "react-toastify";
 import { Modal } from "../ui/modal";
 import { useModal } from "../../hooks/useModal";
-// import DefaultModal from "../ui/modal/DefaultModal";
-import ConfirmationModal from "../ui/modal/ConfirmationModal";
-import AddEmployeeModal from "../ui/modal/AddEmployeeModal";
-import { formatCustomDate } from "../../utils/functions";
 
-export default function EmployeeTable() {
+import ConfirmationModal from "../ui/modal/ConfirmationModal";
+// import AddEmployeeModal from "../ui/modal/AddEmployeeModal";
+// import { formatCustomDate } from "../../utils/functions";
+import AddSupervisorModal from "../ui/modal/AddSupervisorModal";
+
+function SupervisorsTable() {
+  const navigate = useNavigate();
   const [toOpenModal, setToOpenModal] = useState<"delete" | "edit" | "">("");
-  const [loading, setLoading] = useState(true); // ✅ loading state
+  const [loading, setLoading] = useState(true);
   const { isOpen, openModal, closeModal } = useModal();
+
   const {
-    employees,
-    setEmployees,
     toDeleteOrUpdateEmployeeId,
     setToDeleteOrUpdateEmployeeId,
+    supervisors,
+    setSupervisors,
   } = useTheme();
 
   useEffect(() => {
-    const fetchEmployeesData = async () => {
+    const fetchSupervisors = async () => {
       try {
-        const response = await axiosInstance.get("/employees");
-        const data = (response.data as { data: User[] }).data;
-        setEmployees(data);
+        const response = await axiosInstance.get("/supervisor");
+        const supervisors = response.data as supervisorArrayResponse;
+        setSupervisors(supervisors.data);
       } catch (error) {
         toast.error("Failed to fetch employees data.");
       } finally {
-        setLoading(false); // ✅ stop loading
+        setLoading(false);
       }
     };
 
-    fetchEmployeesData();
+    fetchSupervisors();
   }, []);
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await axiosInstance.delete(`/employees/${id}`);
+      const response = await axiosInstance.delete(`/supervisor/${id}`);
       if (response.status === 200) {
-        const updatedEmployees = employees.filter((user) => user.id !== id);
-        setEmployees(updatedEmployees);
+        const updatedEmployees = supervisors.filter((user) => user.id !== id);
+        setSupervisors(updatedEmployees);
         toast.success("Employee deleted successfully.");
       }
     } catch (error: any) {
@@ -65,7 +68,6 @@ export default function EmployeeTable() {
       closeModal();
     }
   };
-
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
@@ -79,9 +81,6 @@ export default function EmployeeTable() {
                   "Email",
                   "First Name",
                   "Last Name",
-                  "Role",
-                  "Created At",
-                  "Updated At",
                   "Actions",
                 ].map((title, idx) => (
                   <TableCell
@@ -107,12 +106,15 @@ export default function EmployeeTable() {
                       ))}
                     </TableRow>
                   ))
-                : employees.map((user) => (
+                : supervisors.map((user) => (
                     <TableRow
+                      onClick={() => {
+                        navigate(`/supervisor/${user.id}`);
+                      }}
                       key={user.id}
-                      className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                      className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
                     >
-                      <TableCell className="px-5 py-4 text-start dark:text-gray-500">
+                      <TableCell className="px-5 py-4 text-start dark:text-gray-500 ">
                         {user.username}
                       </TableCell>
                       <TableCell className="px-5 py-4 text-start dark:text-gray-500">
@@ -124,20 +126,13 @@ export default function EmployeeTable() {
                       <TableCell className="px-5 py-4 text-start dark:text-gray-500">
                         {user.last_name}
                       </TableCell>
-                      <TableCell className="px-5 py-4 text-start capitalize dark:text-gray-500">
-                        {user.role}
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start capitalize dark:text-gray-500">
-                        {formatCustomDate(user.created_at)}
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start capitalize dark:text-gray-500">
-                        {formatCustomDate(user.updated_at)}
-                      </TableCell>
+
                       <TableCell className="px-5 py-4 flex gap-2">
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevents triggering row click
                             setToDeleteOrUpdateEmployeeId(user.id);
                             setToOpenModal("edit");
                             openModal();
@@ -147,7 +142,8 @@ export default function EmployeeTable() {
                         </Button>
                         <Button
                           size="sm"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevents triggering row click
                             setToDeleteOrUpdateEmployeeId(user.id);
                             setToOpenModal("delete");
                             openModal();
@@ -167,7 +163,7 @@ export default function EmployeeTable() {
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
         {toOpenModal === "delete" ? (
           <ConfirmationModal
-            text="Are you sure you want to delete this Admin?"
+            text="Are you sure you want to delete this supervisor?"
             okText="Yes, Delete"
             cancelText="No, Cancel"
             okColor="destructive"
@@ -177,9 +173,11 @@ export default function EmployeeTable() {
             onOk={() => handleDelete(toDeleteOrUpdateEmployeeId)}
           />
         ) : (
-          <AddEmployeeModal closeModal1={closeModal} action="edit" />
+          <AddSupervisorModal closeModal1={closeModal} action="edit" />
         )}
       </Modal>
     </div>
   );
 }
+
+export default SupervisorsTable;

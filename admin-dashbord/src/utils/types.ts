@@ -1,3 +1,5 @@
+import React from "react";
+
 export type User = {
   id: number;
   first_name: string;
@@ -17,6 +19,8 @@ export type ThemeContextType = {
   setEmployees: React.Dispatch<React.SetStateAction<User[]>>;
   toDeleteOrUpdateEmployeeId: number;
   setToDeleteOrUpdateEmployeeId: React.Dispatch<React.SetStateAction<number>>;
+  supervisors: Supervisor[] | [];
+  setSupervisors: React.Dispatch<React.SetStateAction<Supervisor[] | []>>;
 };
 
 export type Theme = "light" | "dark";
@@ -39,4 +43,26 @@ export type LoginResponse = {
     created_at: string; // ISO date string
     updated_at: string; // ISO date string
   };
+};
+
+export type Supervisor = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  supervisor_info: {
+    phone_number: string;
+    address: string;
+    sexe: "Male" | "Female";
+  };
+  created_at: string;
+  updated_at: string;
+  role: "Supervisor";
+};
+export type supervisorResponse = {
+  data: Supervisor;
+};
+export type supervisorArrayResponse = {
+  data: Supervisor[];
 };

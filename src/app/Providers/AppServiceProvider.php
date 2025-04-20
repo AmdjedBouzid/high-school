@@ -25,12 +25,12 @@ class AppServiceProvider extends ServiceProvider
             return strtolower($user->role->name) === 'super admin';
         });
         Gate::define('admin-level', function (User $user) {
-            $value = strtolower($user->role->name); 
+            $value = strtolower($user->role->name);
             return $value === 'admin' || $value === 'super admin';
         });
         Gate::define('update-owner-level', function (User $user, User $target) {
-            return $user->id === $target->id || 
-                   in_array(strtolower($user->role->name), ['admin', 'super admin']);
+            return $user->id === $target->id ||
+                in_array(strtolower($user->role->name), ['admin', 'super admin']);
         });
     }
 }

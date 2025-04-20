@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { UsersRound } from "lucide-react";
+import { UserCheck } from "lucide-react";
 // Assume these icons are imported from an icon library
 import {
   //  BoxCubeIcon,
@@ -44,6 +45,11 @@ const AppSidebar: React.FC = () => {
 
     // Always show User Profile
     {
+      icon: <UserCheck />,
+      name: "Supervisors",
+      path: "/supervisor",
+    },
+    {
       icon: <UserCircleIcon />,
       name: "User Profile",
       path: "/profile",
@@ -83,7 +89,7 @@ const AppSidebar: React.FC = () => {
 
   // const isActive = (path: string) => location.pathname === path;
   const isActive = useCallback(
-    (path: string) => location.pathname === path,
+    (path: string) => new RegExp(`^${path}(\\/\\d+)?$`).test(location.pathname),
     [location.pathname]
   );
 

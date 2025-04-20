@@ -8,7 +8,7 @@
   "author": "Your Name",
   "scripts": {
     "dev": "vite",
-    "electron": "cross-env ELECTRON_START_URL=http://localhost:5173 electron .",
+    "electron": "cross-env ELECTRON_START_URL=http://localhost:5173 electron public/electron.js",
     "build": "tsc -b && vite build",
     "package": "electron-builder --dir",
     "dist": "electron-builder",

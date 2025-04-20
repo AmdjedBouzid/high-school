@@ -31,6 +31,7 @@ class SupervisorController extends Controller
      */
     public function store(SupervisorCreateRequest $request)
     {
+
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,

@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { createContext, useState, useContext, useEffect } from "react";
-import { User, Theme, ThemeContextType } from "../utils/types";
+import { User, Theme, ThemeContextType, Supervisor } from "../utils/types";
 import { getCurrentUser } from "../utils/functions";
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -21,6 +21,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
   const [toDeleteOrUpdateEmployeeId, setToDeleteOrUpdateEmployeeId] =
     useState<number>(-1);
+  const [supervisors, setSupervisors] = useState<Supervisor[] | []>([]);
 
   /**
    * Theme Management:
@@ -68,6 +69,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
         setEmployees,
         toDeleteOrUpdateEmployeeId,
         setToDeleteOrUpdateEmployeeId,
+        supervisors,
+        setSupervisors,
       }}
     >
       {children}

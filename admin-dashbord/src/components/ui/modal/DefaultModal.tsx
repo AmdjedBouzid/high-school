@@ -1,11 +1,11 @@
-import React from "react";
+// import React from "react";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import Button from "../button/Button";
 import { useModal } from "../../../hooks/useModal";
 
 function DefaultModal() {
-  const { isOpen, openModal, closeModal } = useModal();
+  const { closeModal } = useModal();
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");

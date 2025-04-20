@@ -11,7 +11,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class SupervisorCreateRequest extends FormRequest
 {
-    
+
     public function authorize(): bool
     {
         return true;

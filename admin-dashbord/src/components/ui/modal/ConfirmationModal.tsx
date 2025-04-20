@@ -18,8 +18,7 @@ export default function ConfirmationModal({
   text,
   okText,
   cancelText,
-  okColor = "default",
-  cancelColor = "secondary",
+
   onOk,
   onCancel,
   classNameOkButton,
