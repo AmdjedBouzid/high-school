@@ -1,8 +1,16 @@
 "use client";
 
 import type React from "react";
-import { createContext, useState, useContext, useEffect } from "react";
-import { User, Theme, ThemeContextType, Supervisor } from "../utils/types";
+import { createContext, useState, useContext, useEffect, use } from "react";
+import {
+  User,
+  Theme,
+  ThemeContextType,
+  Supervisor,
+  Major,
+  Grad,
+  Section,
+} from "../utils/types";
 import { getCurrentUser } from "../utils/functions";
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -17,11 +25,47 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
       const currentUser = await getCurrentUser();
       setUser(currentUser);
     };
+    const gradsData: Grad[] = [
+      {
+        id: -1,
+        name: "All",
+        created_at: "2025-04-23 21:42:23",
+        updated_at: "2025-04-23 21:42:23",
+      },
+      {
+        id: 1,
+        name: "First Year",
+        created_at: "2025-04-23 21:42:23",
+        updated_at: "2025-04-23 21:42:23",
+      },
+      {
+        id: 2,
+        name: "Second Year",
+        created_at: "2025-04-23 21:43:00",
+        updated_at: "2025-04-23 21:43:00",
+      },
+      {
+        id: 3,
+        name: "Third Year",
+        created_at: "2025-04-23 21:43:00",
+        updated_at: "2025-04-23 21:43:00",
+      },
+    ];
+    setGrads(gradsData);
     fetchGlobalData();
   }, []);
   const [toDeleteOrUpdateEmployeeId, setToDeleteOrUpdateEmployeeId] =
     useState<number>(-1);
   const [supervisors, setSupervisors] = useState<Supervisor[] | []>([]);
+  const [toDeleteOrUpdateSupervisorId, setToDeleteOrUpdateSupervisorId] =
+    useState<number>(-1);
+  const [majors, setMajors] = useState<Major[] | []>([]);
+  const [toDeleteOrUpdateMajorId, setToDeleteOrUpdateMajorId] =
+    useState<number>(-1);
+  const [grads, setGrads] = useState<Grad[] | []>([]);
+  const [gradId, setGradId] = useState<number>(-1);
+  const [majorId, setMajorId] = useState<number>(-1);
+  const [sections, setSections] = useState<Section[] | []>([]);
 
   /**
    * Theme Management:
@@ -71,6 +115,20 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
         setToDeleteOrUpdateEmployeeId,
         supervisors,
         setSupervisors,
+        toDeleteOrUpdateSupervisorId,
+        setToDeleteOrUpdateSupervisorId,
+        majors,
+        setMajors,
+        toDeleteOrUpdateMajorId,
+        setToDeleteOrUpdateMajorId,
+        grads,
+        setGrads,
+        gradId,
+        setGradId,
+        majorId,
+        setMajorId,
+        sections,
+        setSections,
       }}
     >
       {children}

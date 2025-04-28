@@ -13,14 +13,20 @@ class StudentResource extends JsonResource
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'class' => $this->class,
+
+            'section' => $this->whenLoaded('section', fn() => new SectionResource($this->section)),
             'code' => $this->code,
-            'student_state' => $this->whenLoaded('studentState', fn () => $this->studentState->name),
-            'student_type' => $this->whenLoaded('studentType', fn () => $this->studentType->name),
+
+            'student_state' => $this->whenLoaded('recordStatus', fn() => $this->recordStatus->name),
+            'student_type' => $this->whenLoaded('studentType', fn() => $this->studentType->name),
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'insezzzrted_by' => $this->whenLoaded('insertedBy', fn () => $this->insertedBy->username),
+
             'deleted_at' => $this->deleted_at,
+
+            // Optional: Uncomment if relationship exists
+            'inserted_by' => $this->whenLoaded('insertedBy', fn() => $this->insertedBy->username),
         ];
     }
 }

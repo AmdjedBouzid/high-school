@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useTheme } from "../../context/ThemeContext";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -5,8 +7,21 @@ import {
   GroupIcon,
 } from "../../icons";
 import Badge from "../ui/badge/Badge";
+import axiosInstance from "../../utils/Interceptor";
 
 export default function EcommerceMetrics() {
+  const { employees, setEmployees } = useTheme();
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axiosInstance.get("/employees");
+        const data = response.data as any;
+        setEmployees(data.data);
+      } catch (error) {}
+    };
+    fetchEmployees();
+  }, []);
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
       {/* <!-- Metric Item Start --> */}
@@ -18,10 +33,10 @@ export default function EcommerceMetrics() {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Customers
+              Employees
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              3,782
+              {employees.length}
             </h4>
           </div>
           <Badge color="success">

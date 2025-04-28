@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { UsersRound } from "lucide-react";
-import { UserCheck } from "lucide-react";
+import { UserCheck, GraduationCap, Combine } from "lucide-react";
 // Assume these icons are imported from an icon library
 import {
   //  BoxCubeIcon,
@@ -21,7 +21,7 @@ import { useSidebar } from "../context/SidebarContext";
 import { NavItem } from "../utils/types";
 import { useTheme } from "../context/ThemeContext";
 
-const othersItems: NavItem[] = [];
+const Items: NavItem[] = [];
 
 const AppSidebar: React.FC = () => {
   const { user } = useTheme();
@@ -50,36 +50,51 @@ const AppSidebar: React.FC = () => {
       path: "/supervisor",
     },
     {
+      icon: <GraduationCap />,
+      name: "students",
+      subItems: [
+        { name: "First Year", path: "/students", pro: false },
+        { name: "Second Year", path: "/students", pro: false },
+        { name: "third  Year", path: "/students", pro: false },
+      ],
+    },
+    {
+      icon: <Combine />,
+      name: "Majors And Sections",
+      path: "/majorsAndSection",
+    },
+
+    {
       icon: <UserCircleIcon />,
       name: "User Profile",
       path: "/profile",
     },
 
-    {
-      name: "Forms",
-      icon: <ListIcon />,
-      subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-    },
-    {
-      name: "Tables",
-      icon: <TableIcon />,
-      subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-    },
-    {
-      name: "Pages",
-      icon: <PageIcon />,
-      subItems: [
-        { name: "Blank Page", path: "/blank", pro: false },
-        { name: "404 Error", path: "/error-404", pro: false },
-      ],
-    },
+    // {
+    //   name: "Forms",
+    //   icon: <ListIcon />,
+    //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    // },
+    // {
+    //   name: "Tables",
+    //   icon: <TableIcon />,
+    //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+    // },
+    // {
+    //   name: "Pages",
+    //   icon: <PageIcon />,
+    //   subItems: [
+    //     { name: "Blank Page", path: "/blank", pro: false },
+    //     { name: "404 Error", path: "/error-404", pro: false },
+    //   ],
+    // },
   ];
 
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
-    type: "main" | "others";
+    type: "main" | "";
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
@@ -95,14 +110,14 @@ const AppSidebar: React.FC = () => {
 
   useEffect(() => {
     let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
+    ["main", ""].forEach((menuType) => {
+      const items = menuType === "main" ? navItems : Items;
       items.forEach((nav, index) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
               setOpenSubmenu({
-                type: menuType as "main" | "others",
+                type: menuType as "main" | "",
                 index,
               });
               submenuMatched = true;
@@ -129,7 +144,7 @@ const AppSidebar: React.FC = () => {
     }
   }, [openSubmenu]);
 
-  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
+  const handleSubmenuToggle = (index: number, menuType: "main" | "") => {
     setOpenSubmenu((prevOpenSubmenu) => {
       if (
         prevOpenSubmenu &&
@@ -142,7 +157,7 @@ const AppSidebar: React.FC = () => {
     });
   };
 
-  const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
+  const renderMenuItems = (items: NavItem[], menuType: "main" | "") => (
     <ul className="flex flex-col gap-4">
       {items.map((nav, index) => (
         <li key={nav.name}>
@@ -341,12 +356,12 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                  ""
                 ) : (
                   <HorizontaLDots />
                 )}
               </h2>
-              {renderMenuItems(othersItems, "others")}
+              {renderMenuItems(Items, "")}
             </div>
           </div>
         </nav>

@@ -19,7 +19,7 @@ class StudentType extends Model
     ];
 
     public $timestamps = false;
-    
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -28,4 +28,8 @@ class StudentType extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+    public function students()
+    {
+        return $this->hasMany(Student::class, 'record_status_id');
+    }
 }

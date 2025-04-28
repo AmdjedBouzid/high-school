@@ -19,43 +19,43 @@ import ConfirmationModal from "../ui/modal/ConfirmationModal";
 // import AddEmployeeModal from "../ui/modal/AddEmployeeModal";
 // import { formatCustomDate } from "../../utils/functions";
 import AddSupervisorModal from "../ui/modal/AddSupervisorModal";
-
-function SupervisorsTable() {
+import AddMajorModal from "../ui/modal/AddMajorModal";
+interface MajorTableProps {
+  setToOpenModalInParentPage: (v: string) => void;
+}
+function MajorTable({ setToOpenModalInParentPage }: MajorTableProps) {
+  const { gradId } = useTheme();
   const navigate = useNavigate();
   const [toOpenModal, setToOpenModal] = useState<"delete" | "edit" | "">("");
   const [loading, setLoading] = useState(true);
   const { isOpen, openModal, closeModal } = useModal();
-
-  const {
-    setToDeleteOrUpdateSupervisorId,
-    toDeleteOrUpdateSupervisorId,
-    supervisors,
-    setSupervisors,
-  } = useTheme();
+  const [toDeleteMajorId, setToDeleteMajorId] = useState<number>(-1);
+  const [toUpdateMajorId, setToUpdateMajorId] = useState<number>(-1);
+  const { supervisors, setSupervisors, majors, setMajors } = useTheme();
 
   useEffect(() => {
-    const fetchSupervisors = async () => {
+    const fetchMajors = async () => {
       try {
-        const response = await axiosInstance.get("/supervisors");
-        const supervisors = response.data as supervisorArrayResponse;
-        setSupervisors(supervisors.data);
+        const response = await axiosInstance.get("/majors");
+        const majorsData = response.data as any;
+        setMajors(majorsData.data);
       } catch (error) {
-        toast.error("Failed to fetch supervisors  data.");
+        toast.error("Failed to fetch majors  data.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSupervisors();
+    fetchMajors();
   }, []);
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await axiosInstance.delete(`/supervisor/${id}`);
+      const response = await axiosInstance.delete(`/majors/${id}`);
       if (response.status === 200) {
-        const updatedEmployees = supervisors.filter((user) => user.id !== id);
-        setSupervisors(updatedEmployees);
-        toast.success("Employee deleted successfully.");
+        const newMajors = majors.filter((major) => major.id !== id);
+        setMajors(newMajors);
+        toast.success("major deleted successfully.");
       }
     } catch (error: any) {
       if (error.response) {
@@ -68,27 +68,23 @@ function SupervisorsTable() {
       closeModal();
     }
   };
+  const filteredMajors =
+    gradId === -1
+      ? majors
+      : majors.filter((major) => major.grade.id === gradId);
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-      <div className="max-w-full overflow-x-auto">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]  max-lg:w-full">
+      <div className="max-w-full  max-lg:overflow-x-auto">
         <div className="min-w-[1000px]">
-          <Table>
+          <Table className=" max-lg:ml-0">
             {/* Table Header */}
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                {[
-                  "Username",
-                  "Email",
-                  "First Name",
-                  "Last Name",
-
-                  "created at ",
-                  "updated at ",
-                ].map((title, idx) => (
+                {["name", "grad"].map((title, idx) => (
                   <TableCell
                     key={idx}
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                    className="py-3 px-2 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                   >
                     {title}
                   </TableCell>
@@ -99,7 +95,7 @@ function SupervisorsTable() {
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {loading
-                ? Array.from({ length: 5 }).map((_, index) => (
+                ? Array.from({ length: 10 }).map((_, index) => (
                     <TableRow key={index}>
                       {Array.from({ length: 8 }).map((__, i) => (
                         <TableCell key={i} className="px-5 py-4">
@@ -108,39 +104,29 @@ function SupervisorsTable() {
                       ))}
                     </TableRow>
                   ))
-                : supervisors.map((user) => (
+                : filteredMajors?.map((major) => (
                     <TableRow
                       onClick={() => {
-                        navigate(`/supervisor/${user.id}`);
+                        navigate(`/supervisor/${major.id}`);
                       }}
-                      key={user.id}
+                      key={major.id}
                       className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
                     >
-                      <TableCell className="px-5 py-4 text-start dark:text-gray-500 ">
-                        {user.username}
+                      <TableCell className="px-3  text-start dark:text-gray-500 ">
+                        {major.name}
                       </TableCell>
-                      <TableCell className="px-5 py-4 text-start dark:text-gray-500">
-                        {user.email}
+                      <TableCell className="px-3  text-start dark:text-gray-500">
+                        {major.grade.name}
                       </TableCell>
-                      <TableCell className="px-5 py-4 text-start dark:text-gray-500">
-                        {user.first_name}
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start dark:text-gray-500">
-                        {user.last_name}
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start dark:text-gray-500">
-                        {user.created_at}
-                      </TableCell>{" "}
-                      <TableCell className="px-5 py-4 text-start dark:text-gray-500">
-                        {user.updated_at}
-                      </TableCell>
+
                       <TableCell className="px-5 py-4 flex gap-2">
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={(e) => {
-                            e.stopPropagation(); // Prevents triggering row click
-                            setToDeleteOrUpdateSupervisorId(user.id);
+                            e.stopPropagation();
+                            setToOpenModalInParentPage("major");
+                            setToUpdateMajorId(major.id);
                             setToOpenModal("edit");
                             openModal();
                           }}
@@ -150,8 +136,9 @@ function SupervisorsTable() {
                         <Button
                           size="sm"
                           onClick={(e) => {
-                            e.stopPropagation(); // Prevents triggering row click
-                            setToDeleteOrUpdateSupervisorId(user.id);
+                            e.stopPropagation();
+                            setToOpenModalInParentPage("major");
+                            setToDeleteMajorId(major.id);
                             setToOpenModal("delete");
                             openModal();
                           }}
@@ -170,21 +157,26 @@ function SupervisorsTable() {
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
         {toOpenModal === "delete" ? (
           <ConfirmationModal
-            text="Are you sure you want to delete this supervisor?"
+            text="if you delete this major, all related data will be deleted as well."
             okText="Yes, Delete"
             cancelText="No, Cancel"
             okColor="destructive"
             cancelColor="secondary"
             onCancel={closeModal}
             classNameOkButton="bg-red-500 hover:bg-red-400 hover:text-black"
-            onOk={() => handleDelete(toDeleteOrUpdateSupervisorId)}
+            onOk={() => handleDelete(toDeleteMajorId)}
+            confirmationItemId={toDeleteMajorId}
           />
         ) : (
-          <AddSupervisorModal closeModal1={closeModal} action="edit" />
+          <AddMajorModal
+            closeModal1={closeModal}
+            action="edit"
+            confirmationItemId={toUpdateMajorId}
+          />
         )}
       </Modal>
     </div>
   );
 }
 
-export default SupervisorsTable;
+export default MajorTable;

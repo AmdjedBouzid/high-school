@@ -1,7 +1,8 @@
 <?php
 
+
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController; // Verify that this class exists in the specified namespace or create it if missing
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,13 @@ use App\Models\User;
 use App\Http\Controllers\SupervisorAccount\SupervisorController;
 use App\Http\Controllers\Student\StudentController;
 use App\Http\Controllers\EmployeeController; // Add this line to import the EmployeeController
+use App\Http\Controllers\MajorController;
+use App\Http\Controllers\SectionController;
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'getProfile']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::post('/create-admin', [UserController::class, 'insertAdmin']);
 
 Route::post('/create-supervisor', [SupervisorController::class, 'store'])->name('user.supervisor.create');
 
@@ -72,5 +80,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('/student/{student}', [StudentController::class, 'destroy'])->name('student.destroy')->middleware('can:admin-level');
 
+    Route::get('/students/by-section/{sectionId}', [StudentController::class, 'getBySection'])->middleware('can:admin-level');
+
     Route::get('/deleted', [StudentController::class, 'deletedStudents'])->name('student.deleted')->middleware('can:admin-level');
+    Route::apiResource('majors', MajorController::class)->middleware('can:admin-level');
+
+    Route::apiResource('sections', SectionController::class)->middleware('can:admin-level');
 });

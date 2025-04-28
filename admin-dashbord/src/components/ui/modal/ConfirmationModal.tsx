@@ -12,13 +12,14 @@ interface ConfirmationModalProps {
   onCancel: () => void;
   classNameOkButton?: string;
   classNameNoButton?: string;
+  confirmationItemId?: number;
 }
 
 export default function ConfirmationModal({
   text,
   okText,
   cancelText,
-
+  confirmationItemId = -1,
   onOk,
   onCancel,
   classNameOkButton,
@@ -41,7 +42,7 @@ export default function ConfirmationModal({
           onClick={async () => {
             try {
               setLoading(true);
-              await onOk(toDeleteOrUpdateEmployeeId); // Make sure `onOk` returns a Promise
+              await onOk(confirmationItemId); // Make sure `onOk` returns a Promise
             } finally {
               setLoading(false);
             }

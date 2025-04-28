@@ -22,15 +22,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('is-super-admin', function (User $user) {
-            return strtolower($user->role->name) === 'super admin';
+            return strtolower($user->role->name) === 'super-admin';
         });
         Gate::define('admin-level', function (User $user) {
             $value = strtolower($user->role->name);
-            return $value === 'admin' || $value === 'super admin';
+            return $value === 'admin' || $value === 'super-admin';
         });
         Gate::define('update-owner-level', function (User $user, User $target) {
             return $user->id === $target->id ||
-                in_array(strtolower($user->role->name), ['admin', 'super admin']);
+                in_array(strtolower($user->role->name), ['admin', 'super-admin']);
         });
     }
 }

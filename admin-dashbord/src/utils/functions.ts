@@ -7,7 +7,8 @@ export const getToken = (): string | null => {
 export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const response = await axiosInstance.get("/profile");
-    return response.data as User;
+    const data = response.data as { data: User };
+    return data.data;
   } catch (error) {
     return null;
   }
@@ -24,3 +25,15 @@ export function formatCustomDate(isoString: string): string {
 
   return `${hours}:${minutes} ${day}/${month}/${year}`;
 }
+
+export const getGradById = (id: number): string => {
+  const grads = [
+    { id: 1, name: "First Year" },
+    { id: 2, name: "Second Year" },
+    { id: 3, name: "Third Year" },
+    { id: -1, name: "All" },
+  ];
+  const grad = grads.find((grad) => grad.id === id);
+
+  return grad ? grad.name : "Unknown Grad";
+};

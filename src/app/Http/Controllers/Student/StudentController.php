@@ -19,12 +19,13 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $students = Student::with(['studentState', 'studentType', 'insertedBy'])
-            ->latest()
-            ->paginate(10);
-            
+        $students = Student::with(['recordStatus', 'studentType', 'insertedBy'])->latest()->paginate(10);
+
         return new StudentCollection($students);
     }
+
+
+
 
     public function store(StudentStoreRequest $request)
     {
@@ -36,11 +37,12 @@ class StudentController extends Controller
         return new StudentResource($student);
     }
 
-    
+
     public function show(Student $student)
     {
-        return new StudentResource($student->load(['studentState', 'studentType']));
+        return new StudentResource($student->load(['recordStatus', 'studentType']));
     }
+
 
     public function update(StudentUpdateRequest $request, Student $student)
     {
@@ -63,7 +65,19 @@ class StudentController extends Controller
             ->with(['studentState', 'studentType', 'insertedBy'])
             ->latest()
             ->paginate(10);
-            
+
+        return new StudentCollection($students);
+    }
+
+    public function getBySection($sectionId)
+    {
+        // Fetch students that belong to the specific section
+        $students = Student::with(['recordStatus', 'studentType', 'insertedBy'])
+            ->where('section_id', $sectionId)
+            ->latest()
+            ->get();
+
+        // Return the collection of students without pagination
         return new StudentCollection($students);
     }
 }

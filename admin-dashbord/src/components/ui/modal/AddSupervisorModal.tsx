@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useTheme } from "../../../context/ThemeContext";
 import axiosInstance from "../../../utils/Interceptor";
 import {
+  supervisorInputsItems,
   //   Supervisor,
   //   supervisorArrayResponse,
   supervisorResponse,
@@ -35,45 +36,61 @@ function AddSupervisorModal({ closeModal1, action }: closeModalProps) {
 
   const [sex, setSex] = useState("M");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const { toDeleteOrUpdateEmployeeId } = useTheme();
+  const { toDeleteOrUpdateSupervisorId } = useTheme();
 
   const toEditEmp = supervisors.find(
-    (supervisors) => supervisors.id === toDeleteOrUpdateEmployeeId
+    (supervisors) => supervisors.id === toDeleteOrUpdateSupervisorId
   );
   const handleSave = async () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append("first_name", firstName);
-      formData.append("last_name", lastName);
-      formData.append("email", email);
-      formData.append("username", username);
-      formData.append("password", password);
-      formData.append("phone_number", phoneNumber);
-      formData.append("password_confirmation", passwordConfirmation);
-      formData.append("sexe", sex);
-      formData.append("address", adress);
 
       if (action === "add") {
-        const response = await axiosInstance.post("/supervisor", formData);
+        formData.append("first_name", firstName);
+        formData.append("last_name", lastName);
+        formData.append("email", email);
+        formData.append("username", username);
+        formData.append("password", password);
+        formData.append("password_confirmation", passwordConfirmation);
+        formData.append("phone_number", phoneNumber);
+        formData.append("sexe", sex);
+        formData.append("address", adress);
+
+        const response = await axiosInstance.post(
+          "/create-supervisor",
+          formData
+        );
         if (response.status === 201) {
           const responseData = response.data as supervisorResponse;
           const newSupervisor = responseData.data;
           setSupervisors((prev) => [...prev, newSupervisor]);
         }
       } else {
-        // const response = await axiosInstance.put(
-        //   `/employees/${toDeleteOrUpdateEmployeeId}`,
-        //   formData
-        // );
-        // if (response.status === 200) {
-        //   const updatedEmployee = (response.data as { user: User }).user;
-        //   setEmployees((prevEmployees) =>
-        //     prevEmployees.map((employee) =>
-        //       employee.id === updatedEmployee.id ? updatedEmployee : employee
-        //     )
-        //   );
-        // }
+        if (firstName) formData.append("first_name", firstName);
+        if (lastName) formData.append("last_name", lastName);
+        if (email) formData.append("email", email);
+        if (username) formData.append("username", username);
+        if (password) formData.append("password", password);
+        if (phoneNumber)
+          formData.append("supervisor_info[phone_number]", phoneNumber);
+        if (adress) formData.append("supervisor_info[address]", adress);
+        if (sex) formData.append("supervisor_info[sexe]", sex);
+        console.log("formData", formData);
+        const response = await axiosInstance.patch(
+          `/supervisor/${toDeleteOrUpdateSupervisorId}`,
+          formData
+        );
+        if (response.status === 200) {
+          const updatedSupervisor = (response.data as supervisorResponse).data;
+          const updatedSupervisors = supervisors.map((supervisor) =>
+            supervisor.id === updatedSupervisor.id
+              ? updatedSupervisor
+              : supervisor
+          );
+
+          setSupervisors(updatedSupervisors);
+        }
       }
 
       closeModal1();
@@ -84,16 +101,16 @@ function AddSupervisorModal({ closeModal1, action }: closeModalProps) {
     }
   };
 
-  useEffect(() => {
-    if (action === "edit" && toEditEmp) {
-      setFirstName(toEditEmp.first_name);
-      setLastName(toEditEmp.last_name);
-      setEmail(toEditEmp.email);
-      setUsername(toEditEmp.username);
-      setPhoneNumber(toEditEmp.supervisor_info.phone_number);
-      setAdress(toEditEmp.supervisor_info.address);
-    }
-  }, [action, toEditEmp]);
+  // useEffect(() => {
+  //   if (action === "edit" && toEditEmp) {
+  //     setFirstName(toEditEmp.first_name);
+  //     setLastName(toEditEmp.last_name);
+  //     setEmail(toEditEmp.email);
+  //     setUsername(toEditEmp.username);
+  //     setPhoneNumber(toEditEmp.supervisor_info.phone_number);
+  //     setAdress(toEditEmp.supervisor_info.address);
+  //   }
+  // }, [action, toEditEmp]);
 
   return (
     <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11 ">
@@ -197,29 +214,31 @@ function AddSupervisorModal({ closeModal1, action }: closeModalProps) {
                   </span>
                 </div>
               </div>
-              <div className="col-span-2">
-                <Label>Password confirmation</Label>
-                <div className="relative">
-                  <Input
-                    type={showPasswordConfirmation ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={passwordConfirmation}
-                    onChange={(e) => setPasswordConfirmation(e.target.value)}
-                  />
-                  <span
-                    onClick={() =>
-                      setShowPasswordConfirmation(!showPasswordConfirmation)
-                    }
-                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                  >
-                    {showPasswordConfirmation ? (
-                      <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                    ) : (
-                      <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                    )}
-                  </span>
+              {action === "add" && (
+                <div className="col-span-2">
+                  <Label>Password confirmation</Label>
+                  <div className="relative">
+                    <Input
+                      type={showPasswordConfirmation ? "text" : "password"}
+                      placeholder="Enter your password"
+                      value={passwordConfirmation}
+                      onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    />
+                    <span
+                      onClick={() =>
+                        setShowPasswordConfirmation(!showPasswordConfirmation)
+                      }
+                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                    >
+                      {showPasswordConfirmation ? (
+                        <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                      ) : (
+                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                      )}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

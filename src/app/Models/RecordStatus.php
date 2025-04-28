@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StudentState extends Model
+class RecordStatus extends Model
 {
     use HasFactory;
 
@@ -19,7 +19,7 @@ class StudentState extends Model
     ];
 
     public $timestamps = false;
-    
+
     /**
      * The attributes that should be cast to native types.
      *

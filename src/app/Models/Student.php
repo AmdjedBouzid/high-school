@@ -2,63 +2,41 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\StudentState;
-use App\Models\StudentType;
-use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Student extends Model
 {
-    use SoftDeletes, HasFactory;
+    use HasFactory, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'first_name',
         'last_name',
-        'class',
         'code',
-        'student_state_id',
+        'section_id',
+        'record_status_id',
         'student_type_id',
         'inserted_by',
     ];
 
-    
-    protected $dates = ['deleted_at'];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'student_state_id' => 'integer',
-        'student_type_id' => 'integer',
-    ];
-
-    public function studentState(): BelongsTo
+    // Relationships
+    public function section()
     {
-        return $this->belongsTo(StudentState::class);
+        return $this->belongsTo(Section::class);
     }
 
-    public function studentType(): BelongsTo
+    public function recordStatus()
+    {
+        return $this->belongsTo(RecordStatus::class);
+    }
+
+    public function studentType()
     {
         return $this->belongsTo(StudentType::class);
     }
 
-    public function supervisors()
-    {
-        return $this->belongsToMany(User::class, 'student_supervisors');
-    }
-
-    public function insertedBy(): BelongsTo
+    public function insertedBy()
     {
         return $this->belongsTo(User::class, 'inserted_by');
     }

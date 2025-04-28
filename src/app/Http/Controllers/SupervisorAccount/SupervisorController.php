@@ -73,7 +73,7 @@ class SupervisorController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        
+
         return response()->json([
             'message' => 'Supervisor deleted successfully.'
         ], 204);
