@@ -15,17 +15,14 @@ class StudentSeeder extends Seeder
         $studentIndex = 1;
 
         foreach ($sections as $section) {
-            for ($i = 0; $i < 20; $i++) {
+            for ($i = 0; $i < 5; $i++) {
                 DB::table('students')->insert([
                     'first_name' => "Student{$studentIndex}",
                     'last_name' => "Lastname{$studentIndex}",
                     'code' => "S" . strtoupper(Str::random(5)) . $studentIndex,
                     'section_id' => $section->id,
-                    'record_status_id' => rand(1, 5),
+                    'student_state_id' => rand(1, 5),
                     'student_type_id' => rand(1, 2),
-                    'inserted_by' => 1,
-                    'created_at' => now(),
-                    'updated_at' => now(),
                 ]);
                 $studentIndex++;
             }

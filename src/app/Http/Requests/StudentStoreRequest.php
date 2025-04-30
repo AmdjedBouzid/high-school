@@ -28,6 +28,7 @@ class StudentStoreRequest extends FormRequest
             'code' => 'required|string|max:50|unique:students',
             'record_status_id' => 'nullable|exists:record_statuses,id',
             'student_type_id' => 'nullable|exists:student_types,id',
+            'section_id' => 'required|exists:sections,id',
         ];
     }
     public function messages(): array

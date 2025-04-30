@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\StudentState;
+use App\Models\StudentType;
+use App\Models\Section;
+use App\Models\User;
+
 
 class Student extends Model
 {
@@ -15,25 +22,37 @@ class Student extends Model
         'last_name',
         'code',
         'section_id',
-        'record_status_id',
+        'student_state_id',
         'student_type_id',
         'inserted_by',
     ];
 
-    // Relationships
+    protected $dates = ['deleted_at'];
+
+    protected $casts = [
+        'id' => 'integer',
+        'student_state_id' => 'integer',
+        'student_type_id' => 'integer',
+    ];
+    
     public function section()
     {
         return $this->belongsTo(Section::class);
     }
 
-    public function recordStatus()
+    public function studentState(): BelongsTo
     {
-        return $this->belongsTo(RecordStatus::class);
+        return $this->belongsTo(StudentState::class);
     }
 
-    public function studentType()
+    public function studentType(): BelongsTo
     {
         return $this->belongsTo(StudentType::class);
+    }
+
+    public function supervisors()
+    {
+        return $this->belongsToMany(User::class, 'student_supervisors');
     }
 
     public function insertedBy()

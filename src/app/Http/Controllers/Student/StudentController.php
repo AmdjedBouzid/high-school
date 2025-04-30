@@ -9,7 +9,7 @@ use App\Models\Student;
 use App\Models\StudentState;
 use App\Models\StudentType;
 
-use App\Http\Resources\StudentCollection;
+// use App\Http\Resources\StudentCollection;
 use App\Http\Resources\StudentResource;
 
 use App\Http\Requests\StudentStoreRequest;
@@ -19,14 +19,15 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $students = Student::with(['recordStatus', 'studentType', 'insertedBy'])->latest()->paginate(10);
+        $students = Student::with(['studentState', 'studentType', 'insertedBy', "section"])->get();
 
-        return new StudentCollection($students);
+        return StudentResource::collection($students);
+        // return new StudentCollection($students);
     }
-
-
-
-
+    
+    
+    
+    
     public function store(StudentStoreRequest $request)
     {
         $student = Student::create(array_merge(
@@ -40,7 +41,7 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        return new StudentResource($student->load(['recordStatus', 'studentType']));
+        return new StudentResource($student->load(['studentState', 'studentType']));
     }
 
 
@@ -49,11 +50,11 @@ class StudentController extends Controller
         $student->update($request->validated());
         return new StudentResource($student);
     }
-
+    
     public function destroy(Student $student)
     {
         $student->delete();
-
+        
         return response()->json([
             'message' => 'Student deleted successfully.'
         ], 200);
@@ -62,11 +63,12 @@ class StudentController extends Controller
     public function deletedStudents()
     {
         $students = Student::onlyTrashed()
-            ->with(['studentState', 'studentType', 'insertedBy'])
-            ->latest()
-            ->paginate(10);
-
-        return new StudentCollection($students);
+        ->with(['studentState', 'studentType', 'insertedBy'])
+        ->latest()
+        ->get();
+        
+        return StudentResource::collection($students);
+        // return new StudentCollection($students);
     }
 
     public function getBySection($sectionId)

@@ -3,13 +3,13 @@
 POST  http://127.0.0.1:8000/api/create-student HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
+Authorization: Bearer 1|zKDFdJ5gtAKnlAZyl1N2wckTLsU8b3mDxdJLzXRaccf7c049
 
 {
     "first_name": "Amdjed",
     "last_name": "Mrah2",
-    "class": "10B",
-    "code": "2A",
+    "code": "22A",
+    "section_id": 1,
     "student_state_id": 1,
     "student_type_id": 1
 }
@@ -20,7 +20,7 @@ Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
 GET  http://127.0.0.1:8000/api/students HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
+Authorization: Bearer 1|zKDFdJ5gtAKnlAZyl1N2wckTLsU8b3mDxdJLzXRaccf7c049
 
 {
 }
@@ -31,7 +31,7 @@ Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
 GET  http://127.0.0.1:8000/api/student/2 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
+Authorization: Bearer 1|zKDFdJ5gtAKnlAZyl1N2wckTLsU8b3mDxdJLzXRaccf7c049
 
 
  
@@ -43,7 +43,7 @@ Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
 GET  http://127.0.0.1:8000/api/deleted HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
+Authorization: Bearer 1|zKDFdJ5gtAKnlAZyl1N2wckTLsU8b3mDxdJLzXRaccf7c049
 
 
  
@@ -56,7 +56,7 @@ Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
 DELETE   http://127.0.0.1:8000/api/student/2 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|lGDqmE4Xn7qkXCD7OM82tz9ovKgyIo5rEzi0xkWJ34ecc8bd
+Authorization: Bearer 1|zKDFdJ5gtAKnlAZyl1N2wckTLsU8b3mDxdJLzXRaccf7c049
 
 
  

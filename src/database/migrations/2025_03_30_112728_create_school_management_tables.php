@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->timestamps();
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -39,10 +38,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('record_statuses', function (Blueprint $table) {
+
+        Schema::create('student_states', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->timestamps();
+            $table->string('name', 100);
         });
 
 
@@ -54,7 +53,7 @@ return new class extends Migration
 
         Schema::create('grades', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Example: "First Year", "Second Year", etc.
+            $table->string('name');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -83,29 +82,33 @@ return new class extends Migration
             $table->string('code', 50)->unique();
 
             $table->foreignId('section_id')->nullable()->constrained('sections')->onDelete('cascade');
-            $table->foreignId('record_status_id')->nullable()->constrained('record_statuses')->onDelete('set null');
             $table->foreignId('student_type_id')->nullable()->constrained('student_types')->onDelete('set null');
+            $table->foreignId('student_state_id')->nullable()->constrained('student_states')->onDelete('set null');
             $table->foreignId('inserted_by')->nullable()->constrained('users')->onDelete('set null');
-
+            
             $table->timestamps();
             $table->softDeletes();
         });
 
-
+        
         Schema::create('student_supervisors', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->primary(['user_id', 'student_id']);
             $table->softDeletes();
         });
-
+        
+        Schema::create('absence_actions', function (Blueprint $table) {
+            $table->id();
+            $table->dateTime('time');
+            $table->foreignId('made_by')->nullable()->constrained('users')->onDelete('set null');
+        });
+        
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
-            $table->date('day');
-            $table->string('class_index', 50);
-            $table->timestamps();
-            $table->softDeletes();
+            $table->foreignId('from')->constrained('absence_actions')->onDelete('cascade');
+            $table->foreignId('to')->nullable()->constrained('absence_actions')->onDelete('set null');
         });
     }
 

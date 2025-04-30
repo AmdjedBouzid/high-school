@@ -10,31 +10,26 @@ class Absence extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'student_id',
-        'day',
-        'class_index',
-        'address',
+        'from',
+        'to',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'student_id' => 'integer',
-        'day' => 'date',
-    ];
+    public $timestamps = false;
 
-    public function student(): BelongsTo
+    public function student()
     {
         return $this->belongsTo(Student::class);
+    }
+
+    public function fromAction()
+    {
+        return $this->belongsTo(AbsenceAction::class, 'from');
+    }
+
+    public function toAction()
+    {
+        return $this->belongsTo(AbsenceAction::class, 'to');
     }
 }

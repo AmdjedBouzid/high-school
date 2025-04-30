@@ -9,12 +9,12 @@ class StudentResource extends JsonResource
 {
     public function toArray($request)
     {
-        return [
+        $array = [
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
 
-            'section' => $this->whenLoaded('section', fn() => new SectionResource($this->section)),
+            'section' => $this->whenLoaded('section', fn() => $this->section->name),
             'code' => $this->code,
 
             'student_state' => $this->whenLoaded('recordStatus', fn() => $this->recordStatus->name),
@@ -23,10 +23,13 @@ class StudentResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
-            'deleted_at' => $this->deleted_at,
-
-            // Optional: Uncomment if relationship exists
             'inserted_by' => $this->whenLoaded('insertedBy', fn() => $this->insertedBy->username),
         ];
+
+        if ($this->deleted_at) {
+            $array['deleted_at'] = $this->deleted_at;
+        }
+
+        return $array;
     }
 }

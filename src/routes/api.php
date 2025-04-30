@@ -11,7 +11,8 @@ use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Http\Controllers\SupervisorAccount\SupervisorController;
 use App\Http\Controllers\Student\StudentController;
-use App\Http\Controllers\EmployeeController; // Add this line to import the EmployeeController
+use App\Http\Controllers\AbsenceController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MajorController;
 use App\Http\Controllers\SectionController;
 
@@ -46,6 +47,7 @@ Route::post('/sanctum/token', function (Request $request) {
 
     return $user->createToken($request->device_name)->plainTextToken;
 });
+
 Route::middleware(['auth:sanctum', 'abilities:crud-employees'])
     ->prefix('employees')
     ->group(function () {
@@ -56,34 +58,40 @@ Route::middleware(['auth:sanctum', 'abilities:crud-employees'])
         Route::delete('{id}', [EmployeeController::class, 'deleteEmployee']);
     });
 Route::middleware('auth:sanctum')->group(function () {
+
     // ! Supervisor
 
     Route::get('/profile', [SupervisorController::class, 'profile'])->name('auth.profile');
-
     Route::get('/supervisors', [SupervisorController::class, 'index'])->name('user.supervisor.index')->middleware('can:admin-level');
-
     Route::get('/supervisor/{supervisor}', [SupervisorController::class, 'show'])->name('user.supervisor.show')->middleware('can:admin-level');
-
     Route::patch('/supervisor/{supervisor}', [SupervisorController::class, 'update'])->name('user.supervisor.update')->middleware('can:update-owner-level,supervisor');
-
     Route::delete('/supervisor/{supervisor}', [SupervisorController::class, 'destroy'])->name('user.supervisor.destroy')->middleware('can:admin-level');
 
     // ! Student
 
-    Route::post('/create-student', [StudentController::class, 'store'])->name('student.create')->middleware('can:admin-level');
-
-    Route::get('/students', [StudentController::class, 'index'])->name('student.index')->middleware('can:admin-level');
-
-    Route::get('/student/{student}', [StudentController::class, 'show'])->name('student.show')->middleware('can:admin-level');
-
-    Route::patch('/student/{student}', [StudentController::class, 'update'])->name('student.update')->middleware('can:admin-level');
-
-    Route::delete('/student/{student}', [StudentController::class, 'destroy'])->name('student.destroy')->middleware('can:admin-level');
-
     Route::get('/students/by-section/{sectionId}', [StudentController::class, 'getBySection'])->middleware('can:admin-level');
-
-    Route::get('/deleted', [StudentController::class, 'deletedStudents'])->name('student.deleted')->middleware('can:admin-level');
+    Route::get('/students', [StudentController::class, 'index'])->name('student.index')->middleware('can:admin-level');
+    Route::prefix('student')->middleware(['can:admin-level'])->group(function () {
+        Route::post('/create', [StudentController::class, 'store'])->name('student.create');
+        Route::get('/{student}', [StudentController::class, 'show'])->name('student.show');
+        Route::patch('/{student}', [StudentController::class, 'update'])->name('student.update');
+        Route::delete('/{student}', [StudentController::class, 'destroy'])->name('student.destroy');
+        Route::get('/deleted', [StudentController::class, 'deletedStudents'])->name('student.deleted');
+        
+    });
+    
+    
     Route::apiResource('majors', MajorController::class)->middleware('can:admin-level');
 
     Route::apiResource('sections', SectionController::class)->middleware('can:admin-level');
+    
+    // ! Absences
+    Route::get('/absences', [AbsenceController::class, 'index'])->name('student.absences')->middleware('can:admin-level');
+    Route::prefix('absence')->middleware(['can:admin-level'])->group(function () {
+        Route::post('/add-start', [AbsenceController::class, 'startAbsence'])->name('student.absences.add.start');
+        Route::post('/add-end', [AbsenceController::class, 'endAbsence'])->name('student.absences.add.end');
+        Route::delete('/delete-start', [AbsenceController::class, 'deleteStartAbsence'])->name('student.absences.delete.start');
+        Route::delete('/delete-end', [AbsenceController::class, 'deleteEndAbsence'])->name('student.absences.delete.end');
+    });
+
 });

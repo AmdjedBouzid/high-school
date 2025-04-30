@@ -23,7 +23,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "username": "amdjedmr_1",
+    "username": "mrahamdjed",
     "password": "123456789",
     "device_name": "Desktop"
 }
