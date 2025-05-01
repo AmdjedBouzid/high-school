@@ -26,6 +26,8 @@ class SupervisorResource extends JsonResource
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             
             'role' => $this->whenLoaded('role', fn () => $this->role->name),
+
+            'students' => $this->whenLoaded('students', fn () => $this->students),
         ];
     }
 }

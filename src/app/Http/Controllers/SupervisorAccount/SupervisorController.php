@@ -15,7 +15,7 @@ class SupervisorController extends Controller
 {
     public function index()
     {
-        $supervisors = User::with(['supervisorInfo', 'role'])
+        $supervisors = User::with(['supervisorInfo', 'role', "students"])
             ->whereHas('role', function ($q) {
                 $q->where('name', 'supervisor');
             })->get();

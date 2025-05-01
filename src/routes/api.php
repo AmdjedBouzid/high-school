@@ -13,8 +13,10 @@ use App\Http\Controllers\SupervisorAccount\SupervisorController;
 use App\Http\Controllers\Student\StudentController;
 use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\MajorController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\StudentSupervisor\StudentSupervisorController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'getProfile']);
@@ -77,9 +79,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{student}', [StudentController::class, 'update'])->name('student.update');
         Route::delete('/{student}', [StudentController::class, 'destroy'])->name('student.destroy');
         Route::get('/deleted', [StudentController::class, 'deletedStudents'])->name('student.deleted');
-        
+        Route::post('/code-regenerate/{student}', [StudentController::class, 'codeRegenerate'])->name('student.code.regenerate');
     });
     
+    Route::get('/gradeinfo/{grade}', [SchoolController::class, 'gradeInfo'])->name('grade.info')->middleware('can:admin-level');
+    
+    Route::prefix('assignment')->middleware(['can:admin-level'])->group(function () {
+        Route::get('/{supervisor}', [StudentSupervisorController::class, 'show'])->name('assignments.show');
+        Route::post('/', [StudentSupervisorController::class, 'store'])->name('assignments.store');
+        Route::delete('/', [StudentSupervisorController::class, 'destroy'])->name('assignments.destroy');
+    });
     
     Route::apiResource('majors', MajorController::class)->middleware('can:admin-level');
 

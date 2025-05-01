@@ -1,0 +1,35 @@
+GET  http://127.0.0.1:8000/api/assignment/1 HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+
+{
+
+}
+
+
+###
+POST  http://127.0.0.1:8000/api/assignment HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+
+{
+    "code" : "SDWRWJ1",
+    "user_id" : 1
+}
+
+
+###
+DELETE  http://127.0.0.1:8000/api/assignment HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+
+{
+    "code" : "SDWRWJ1",
+    "user_id" : 1
+}
+
+
+###

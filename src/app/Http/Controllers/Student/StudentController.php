@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\StudentState;
 use App\Models\StudentType;
+use App\Models\Grade;
 
 // use App\Http\Resources\StudentCollection;
 use App\Http\Resources\StudentResource;
@@ -25,23 +26,31 @@ class StudentController extends Controller
         // return new StudentCollection($students);
     }
     
-    
-    
-    
     public function store(StudentStoreRequest $request)
     {
         $student = Student::create(array_merge(
             $request->validated(),
-            ['inserted_by' => $request->user()->id]
+            ['inserted_by' => $request->user()->id,"code"=>"-1"]
         ));
-        $student->load(['studentState', 'studentType', 'insertedBy']);
+        $student->code = Student::generateCode($student->id, now());
+        $student->save();
+        $student->load(['studentState', 'studentType', 'insertedBy', "section"]);
         return new StudentResource($student);
+    }
+
+    public function codeRegenerate(Student $student)
+    {
+        $student->code = Student::generateCode($student->id, now());
+        $student->save();
+        return response()->json([
+            'code' => $student->code,
+        ], 200);
     }
 
 
     public function show(Student $student)
     {
-        return new StudentResource($student->load(['studentState', 'studentType']));
+        return new StudentResource($student->load(['studentState', 'studentType', 'insertedBy', "section"]));
     }
 
 
@@ -63,7 +72,7 @@ class StudentController extends Controller
     public function deletedStudents()
     {
         $students = Student::onlyTrashed()
-        ->with(['studentState', 'studentType', 'insertedBy'])
+        ->with(['studentState', 'studentType', 'insertedBy', "section"])
         ->latest()
         ->get();
         
@@ -74,7 +83,7 @@ class StudentController extends Controller
     public function getBySection($sectionId)
     {
         // Fetch students that belong to the specific section
-        $students = Student::with(['recordStatus', 'studentType', 'insertedBy'])
+        $students = Student::with(['studentState', 'studentType', 'insertedBy', "section"])
             ->where('section_id', $sectionId)
             ->latest()
             ->get();
@@ -82,4 +91,5 @@ class StudentController extends Controller
         // Return the collection of students without pagination
         return new StudentCollection($students);
     }
+
 }

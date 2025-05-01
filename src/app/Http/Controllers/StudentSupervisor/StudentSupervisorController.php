@@ -15,10 +15,10 @@ use App\Http\Resources\SupervisorCollection;
 class StudentSupervisorController extends Controller
 {
 
-    public function index(User $supervisor)
+    public function show(User $supervisor)
     {
-        $students = $supervisor->studends()
-            ->with(['studentType', 'studentState'])
+        $students = $supervisor->students()
+            ->with(['studentState', 'studentType', 'insertedBy', "section"])
             ->get();
 
         return StudentResource::collection($students);
@@ -38,7 +38,7 @@ class StudentSupervisorController extends Controller
                 'message' => 'This supervisor is already assigned to the student'
             ], 422);
         }
-
+        
         $student->supervisors()->attach($validated['user_id']);
 
         return response()->json([
@@ -50,18 +50,18 @@ class StudentSupervisorController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'student_id' => 'required|exists:students,id'
+            'code' => 'required|string|exists:students,code',
         ]);
 
-        $student = Student::find($validated['student_id']);
+        $student = Student::where('code', $validated['code'])->first();
 
-        if (!$student->supervisors()->where('user_id', $supervisor->id)->exists()) {
+        if (!$student->supervisors()->where('user_id', $validated['user_id'])->exists()) {
             return response()->json([
                 'message' => 'This supervisor is not assigned to the student'
             ], 404);
         }
 
-        $student->supervisors()->detach($supervisor->id);
+        $student->supervisors()->detach($validated['user_id']);
 
         return response()->json([
             'message' => 'Supervisor removed successfully'

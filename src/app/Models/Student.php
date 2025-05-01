@@ -59,4 +59,31 @@ class Student extends Model
     {
         return $this->belongsTo(User::class, 'inserted_by');
     }
+    public static function generateCode($id, $date) {
+        // Parse the date
+        $timestamp = strtotime($date);
+        if (!$timestamp) {
+            return "Invalid date";
+        }
+    
+        // x = day (2 digits) + month (2 digits) + last digit of year
+        $day = date('d', $timestamp);
+        $month = date('m', $timestamp);
+        $yearLastDigit = substr(date('Y', $timestamp), -1);
+        $x = $day . $month . $yearLastDigit;
+    
+        // z = ["A", "M", "B"]
+        $z = ["A", "M", "B"];
+        $zIndex = strlen($x) % count($z); // To prevent index out of bounds
+        $zChar = $z[$zIndex];
+    
+        // Random component: last 3 digits of current milliseconds
+        $micro = microtime(true);
+        $millis = (int)($micro * 1000);
+        $randomPart = substr($millis, -3); // last 3 digits
+    
+        // Combine to create the final code
+        return $x . $id . $zChar . $randomPart;
+    }
+    
 }

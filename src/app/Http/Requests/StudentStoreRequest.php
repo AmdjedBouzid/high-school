@@ -25,8 +25,7 @@ class StudentStoreRequest extends FormRequest
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'section_id' => 'required|exists:sections,id',
-            'code' => 'required|string|max:50|unique:students',
-            'record_status_id' => 'nullable|exists:record_statuses,id',
+            'student_state_id' => 'nullable|exists:student_states,id',
             'student_type_id' => 'nullable|exists:student_types,id',
             'section_id' => 'required|exists:sections,id',
         ];
@@ -50,7 +49,7 @@ class StudentStoreRequest extends FormRequest
             'code.max' => 'The student code may not be greater than 50 characters.',
             'code.unique' => 'The student code has already been taken.',
 
-            'record_status_id.exists' => 'The selected record status is invalid.',
+            'student_state_id.exists' => 'The selected student state is invalid.',
             'student_type_id.exists' => 'The selected student type is invalid.',
         ];
     }

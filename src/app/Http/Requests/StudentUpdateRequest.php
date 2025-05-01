@@ -14,17 +14,14 @@ class StudentUpdateRequest extends FormRequest
 
     public function rules(): array
     {
+        if ($this->has('id') || $this->has('code')) {
+            abort(422, 'Modification is not allowed');
+        }
         return [
             'first_name' => 'sometimes|string|max:100',
             'last_name' => 'sometimes|string|max:100',
             'section_id' => 'sometimes|exists:sections,id',
-            'code' => [
-                'sometimes',
-                'string',
-                'max:50',
-                Rule::unique('students')->ignore($this->student),
-            ],
-            'record_status_id' => 'sometimes|exists:record_statuses,id',
+            'student_state_id' => 'sometimes|exists:student_states,id',
             'student_type_id' => 'sometimes|exists:student_types,id',
         ];
     }
@@ -44,7 +41,7 @@ class StudentUpdateRequest extends FormRequest
             'code.max' => 'The student code may not be greater than 50 characters.',
             'code.unique' => 'The student code has already been taken.',
 
-            'record_status_id.exists' => 'The selected record status is invalid.',
+            'student_state_id.exists' => 'The selected student state is invalid.',
             'student_type_id.exists' => 'The selected student type is invalid.',
         ];
     }

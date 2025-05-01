@@ -1,7 +1,7 @@
 GET  http://127.0.0.1:8000/api/supervisors HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 5|UFLOr45JHGX2RLF9BNP1XVBQS6DMTt7bYxKgJ7Ae9ad07e65
+Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
 
 {
 
@@ -10,13 +10,38 @@ Authorization: Bearer 5|UFLOr45JHGX2RLF9BNP1XVBQS6DMTt7bYxKgJ7Ae9ad07e65
 
 ###
 
-GET  http://127.0.0.1:8000/api/supervisors HTTP/1.1
+POST  http://127.0.0.1:8000/api/create-supervisor HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|QbCnEtvl36b2Q3ffA9BKcfNU5IzBc7tADqk0mzbJ34b0c4d6
 
 {
+    "first_name": "John",
+    "last_name": "Doe",
+    "username": "john_zdoe12223",
+    "email": "john.doz22e@example.com",
+    "password": "password123",
+    "password_confirmation": "password123",
+    "phone_number": "0123456789",
+    "address": "123 Main Street",
+    "sexe": "M"
+}
 
+###
+
+POST  http://127.0.0.1:8000/api/create-supervisor HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "username": "john_zdoe12223",
+    "email": "john.doz22e@example.com",
+    "password": "password123",
+    "password_confirmation": "password123",
+    "phone_number": "0123456789",
+    "address": "123 Main Street",
+    "sexe": "M"
 }
 
 ###

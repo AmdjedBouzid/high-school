@@ -18,7 +18,8 @@ class MajorResource extends JsonResource
                 'id' => $this->grade->id,
                 'name' => $this->grade->name,
             ]),
-
+            'sections' => SectionResource::collection($this->whenLoaded('sections')),
+            
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];
