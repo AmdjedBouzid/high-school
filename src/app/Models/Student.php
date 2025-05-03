@@ -59,6 +59,12 @@ class Student extends Model
     {
         return $this->belongsTo(User::class, 'inserted_by');
     }
+    
+    public function absences()
+    {
+        return $this->hasMany(Absence::class);
+    }
+
     public static function generateCode($id, $date) {
         // Parse the date
         $timestamp = strtotime($date);

@@ -6,10 +6,83 @@ use Illuminate\Http\Request;
 use App\Models\Absence;
 use App\Models\AbsenceAction;
 use App\Models\Student;
+use App\Models\Section;
+
 use App\Http\Resources\AbsenceResource;
+use App\Http\Resources\SectionResource;
 
 class AbsenceController extends Controller
 {
+    
+    public function sectionAbsenceAtDay(Request $request)
+    {
+        $request->validate([
+            'section_id' => 'required|exists:sections,id',
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+
+        $section = Section::with(['students.absences' => function($query) use ($request) {
+            $query->with(['fromAction', 'toAction'])
+              ->whereHas('fromAction', function($q) use ($request) {
+              $q->whereDate('time', $request->date);
+              })
+              ->orWhereNull('to');
+        }])->findOrFail($request->section_id);
+
+        return new SectionResource($section); 
+    }
+
+
+    public function handelRequest(Request $request){
+        foreach ($request->absences as $absence) {
+            if ( ! Absence::where('student_id', $absence->student_id)->whereNull('to')->exists()) {
+                $absenceAction = AbsenceAction::create([
+                    'time' => $absence->time,
+                    'made_by' => $request->user()->id,
+                    'type' => $absence->type,
+                ]);
+    
+                Absence::create([
+                    'student_id' => $absence->student_id,
+                    'from' => $absenceAction->id,
+                ]);
+            }
+        }
+        foreach ($request->presents as $present) {
+            $absence = Absence::where('student_id', $request->student_id)
+                ->where('from', $present->from_id)
+                ->whereNull('to')
+                ->first();
+            
+            if ($absence) {
+                $absenceAction = AbsenceAction::create([
+                        'time' => $present->endtime,
+                        'made_by' => $request->user()->id,
+                        'type' => $present->type,
+                    ]);
+                    $absence->to = $absenceAction->id;
+                    $absence->save();
+            }
+        }
+        foreach ($request->deletedAbsences as $absence) {
+            $absence = Absence::where('student_id', $absence->student_id)
+                ->where('from', $absence->from_id)
+                ->first();
+                
+            if ($absence) {
+                $absence->delete();
+            }   
+        }
+        foreach ($request->deletedPresents as $present) {
+            $absence = Absence::where('student_id', $present->student_id)
+                ->where('from', $present->from_id)
+                ->first();
+
+            if ($absence) {
+                $absence->delete();
+            }
+        }
+    }
     
     public function index()
     {

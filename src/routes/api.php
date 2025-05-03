@@ -97,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // ! Absences
     Route::get('/absences', [AbsenceController::class, 'index'])->name('student.absences')->middleware('can:admin-level');
     Route::prefix('absence')->middleware(['can:admin-level'])->group(function () {
+        Route::get('/of-section', [AbsenceController::class, 'sectionAbsenceAtDay' ])->name('student.absences.get');
         Route::post('/add-start', [AbsenceController::class, 'startAbsence'])->name('student.absences.add.start');
         Route::post('/add-end', [AbsenceController::class, 'endAbsence'])->name('student.absences.add.end');
         Route::delete('/delete-start', [AbsenceController::class, 'deleteStartAbsence'])->name('student.absences.delete.start');

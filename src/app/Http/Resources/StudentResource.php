@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\AbsenceResource;
 
 class StudentResource extends JsonResource
 {
@@ -24,6 +25,13 @@ class StudentResource extends JsonResource
             'updated_at' => $this->updated_at,
 
             'inserted_by' => $this->whenLoaded('insertedBy', fn() => $this->insertedBy->username),
+
+            // 'absences' => $this->whenLoaded('absences',  ),
+            // 'absences' => $this->whenLoaded('absences', ),
+            'absences' => $this->whenLoaded('absences', function() {
+                return AbsenceResource::collection($this->absences);
+            })
+
         ];
 
         if ($this->deleted_at) {

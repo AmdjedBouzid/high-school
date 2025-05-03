@@ -9,15 +9,26 @@ use App\Http\Resources\StudentResource;
 
 class AbsenceResource extends JsonResource
 {
-
+    
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
-            'student' => new StudentResource($this->whenLoaded('student')),
-            'fromAction' => $this->whenLoaded('fromAction'),
-            'toAction' => $this->whenLoaded('toAction'),
+            'student' => $this->whenLoaded('student', fn() => new StudentResource($this->student)),
+            'from_action' => $this->whenLoaded('fromAction', fn() => new AbsenceActionResource($this->fromAction)),
+            'to_action' => $this->whenLoaded('toAction', fn() => new AbsenceActionResource($this->toAction)),
         ];
     }
 
+}
+
+class AbsenceActionResource extends JsonResource{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'time' => $this->time,
+            'made_by' => $this->madeBy->username,
+        ];
+    }
 }

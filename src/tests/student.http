@@ -25,8 +25,8 @@ Accept: application/json
 Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
 
 {
-    "first_name": "John",
-    "last_name": "Doe",
+    "first_name": "Amdjed",
+    "last_name": "Mrah",
     "section_id": 1,
     "student_state_id": 1,
     "student_type_id": 1

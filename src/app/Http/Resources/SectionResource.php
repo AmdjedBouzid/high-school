@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\StudentResource;
 
 class SectionResource extends JsonResource
 {
@@ -21,6 +22,8 @@ class SectionResource extends JsonResource
                 'grade_id' => $this->major->grade_id,
             ]),
 
+            'students' => $this->whenLoaded('students', fn() => StudentResource::collection($this->students)),
+            
         ];
     }
 }
