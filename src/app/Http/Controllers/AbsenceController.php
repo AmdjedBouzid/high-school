@@ -215,5 +215,6 @@ class AbsenceController extends Controller
             "data" => $absences
         ]);
     }
+    
 
 }

@@ -15,10 +15,18 @@ use App\Http\Resources\SupervisorCollection;
 class StudentSupervisorController extends Controller
 {
 
-    public function show(User $supervisor)
+    public function show(Request $request,User $supervisor)
     {
+        if ( $request->user()->id != $supervisor->id || ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
+            return response()->json([
+                'message' => 'You cannot access this supervisor'
+            ], 422);
+        }
+
         $students = $supervisor->students()
-            ->with(['studentState', 'studentType', 'insertedBy', "section"])
+            ->with(['studentState', 'studentType', 'insertedBy', "section", "absences" => function ($query) {
+                $query->with(['fromAction', 'toAction']);
+            }])
             ->get();
 
         return StudentResource::collection($students);
@@ -30,6 +38,15 @@ class StudentSupervisorController extends Controller
             'code' => 'required|string|exists:students,code',
             'user_id' => 'required|exists:users,id'
         ]);
+        
+        if ( $request->user()->id != $request->userId && ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
+            return response()->json([
+                'message' => 'You cannot assign a supervisor',
+                'user' => $request->userId,
+                'role' => $request->user()
+            ], 422);
+        }
+
         
         $student = Student::where('code', $validated['code'])->first();
         
@@ -48,6 +65,12 @@ class StudentSupervisorController extends Controller
 
     public function destroy(Request $request)
     {
+        if ( $request->user()->id != $request->userId || ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
+            return response()->json([
+                'message' => 'You cannot access this supervisor'
+            ], 422);
+        }
+
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'code' => 'required|string|exists:students,code',

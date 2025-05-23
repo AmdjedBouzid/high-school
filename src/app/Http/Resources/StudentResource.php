@@ -25,9 +25,7 @@ class StudentResource extends JsonResource
             'updated_at' => $this->updated_at,
 
             'inserted_by' => $this->whenLoaded('insertedBy', fn() => $this->insertedBy->username),
-
-            // 'absences' => $this->whenLoaded('absences',  ),
-            // 'absences' => $this->whenLoaded('absences', ),
+            
             'absences' => $this->whenLoaded('absences', function() {
                 return AbsenceResource::collection($this->absences);
             })

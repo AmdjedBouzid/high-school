@@ -8,15 +8,16 @@ Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
 }
 
 
+
 ###
 POST  http://127.0.0.1:8000/api/assignment HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+Authorization: Bearer 300|1Dn6tEKUE37rqghQgYmI9zb5Jp9hN4cpSfeAefWZa38c8f06
 
 {
-    "code" : "SDWRWJ1",
-    "user_id" : 1
+    "code" : "SZHCRZ5",
+    "user_id" : 7
 }
 
 

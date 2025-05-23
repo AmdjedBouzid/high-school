@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [SupervisorController::class, 'profile'])->name('auth.profile');
     Route::get('/supervisors', [SupervisorController::class, 'index'])->name('user.supervisor.index')->middleware('can:admin-level');
-    Route::get('/supervisor/{supervisor}', [SupervisorController::class, 'show'])->name('user.supervisor.show')->middleware('can:admin-level');
+    Route::get('/supervisor/{supervisor}', [SupervisorController::class, 'show'])->name('user.supervisor.show')->middleware('can:update-owner-level,supervisor');
     Route::patch('/supervisor/{supervisor}', [SupervisorController::class, 'update'])->name('user.supervisor.update')->middleware('can:update-owner-level,supervisor');
     Route::delete('/supervisor/{supervisor}', [SupervisorController::class, 'destroy'])->name('user.supervisor.destroy')->middleware('can:admin-level');
 
@@ -84,7 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/gradeinfo/{grade}', [SchoolController::class, 'gradeInfo'])->name('grade.info')->middleware('can:admin-level');
     
-    Route::prefix('assignment')->middleware(['can:admin-level'])->group(function () {
+    Route::prefix('assignment')->group(function () {
         Route::get('/{supervisor}', [StudentSupervisorController::class, 'show'])->name('assignments.show');
         Route::post('/', [StudentSupervisorController::class, 'store'])->name('assignments.store');
         Route::delete('/', [StudentSupervisorController::class, 'destroy'])->name('assignments.destroy');
