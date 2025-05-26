@@ -1,0 +1,44 @@
+models:
+  Role:
+    name: string
+  User:
+    first_name: string
+    last_name: string
+    email: string unique
+    password: string
+    role_id: id nullable
+  SupervisorInfo:
+    user_id: id
+    phone_number: string nullable
+    sexe: enum:M,F nullable
+    address: string nullable
+  RecordStatus:
+    name: string
+  StudentType:
+    name: string
+  Student:
+    first_name: string
+    last_name: string
+    class: string
+    code: string unique
+    record_status_id: id nullable
+    student_type_id: id nullable
+  Absence:
+    student_id: id
+    day: date
+    class_index: string
+    address: string nullable
+relationships:
+  User:
+    role_id: belongsTo:Role
+    supervisorInfo: hasOne:SupervisorInfo
+    students: belongsToMany:Student through:student_supervisor
+  SupervisorInfo:
+    user_id: belongsTo:User
+  Student:
+    record_status_id: belongsTo:RecordStatus
+    student_type_id: belongsTo:StudentType
+    absences: hasMany:Absence
+    supervisors: belongsToMany:User through:student_supervisor
+  Absence:
+    student_id: belongsTo:Student

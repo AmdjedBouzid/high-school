@@ -16,6 +16,7 @@
 /storage/*.key
 /storage/pail
 
+
 # Ignore public build files (e.g., Vite, Mix)
 public/build
 public/hot

@@ -1,0 +1,96 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\Major;
+use App\Models\Section;
+use App\Models\Student;
+use App\Models\RecordStatus;
+use App\Models\StudentType;
+use Carbon\Carbon;
+
+class DatabaseSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // Seed roles
+        DB::table('roles')->insert([
+            ['name' => 'super-admin', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'admin', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 3, 'name' => 'Supervisor', 'created_at' => now(), 'updated_at' => now()],
+        ]);
+
+        // Create super-admin
+        $superAdmin = User::create([
+            'first_name' => 'Amdjed',
+            'last_name' => 'Bouzid',
+            'username' => 'amdjed',
+            'email' => 'amdjedbouzid9@gmail.com',
+            'password' => Hash::make('amdjed2004'),
+            'role_id' => 1,
+        ]);
+
+        // Create 5 admins
+        for ($i = 1; $i <= 5; $i++) {
+            User::create([
+                'first_name' => 'Admin',
+                'last_name' => "User$i",
+                'username' => "admin$i",
+                'email' => "admin$i@example.com",
+                'password' => Hash::make('amdjed2004'),
+                'role_id' => 2,
+            ]);
+        }
+
+        // Create majors
+        $majors = ['Science', 'Literary', 'Mathematics', 'Languages', 'Electrical Technician', 'Mechanical Technician'];
+        foreach ($majors as $name) {
+            Major::create(['name' => $name]);
+        }
+
+        // Create sections
+        foreach (Major::all() as $major) {
+            for ($g = 1; $g <= 3; $g++) {
+                Section::create([
+                    'name' => $major->name . " Grade $g",
+                    'grade' => $g,
+                    'major_id' => $major->id,
+                ]);
+            }
+        }
+
+        // Create record statuses
+        $statuses = ['Active', 'Inactive', 'Suspended', 'Graduated', 'Withdrawn'];
+        foreach ($statuses as $status) {
+            RecordStatus::create(['name' => $status]);
+        }
+
+        // Create student types
+        $types = ['half-inner', 'half-outer'];
+        foreach ($types as $type) {
+            StudentType::create(['name' => $type]);
+        }
+
+        // Create 50 students
+        $sections = Section::all();
+        $recordStatuses = RecordStatus::all();
+        $studentTypes = StudentType::all();
+        for ($i = 1; $i <= 50; $i++) {
+            Student::create([
+                'first_name' => "Student",
+                'last_name' => "Number$i",
+                'code' => strtoupper(Str::random(8)),
+                'section_id' => $sections->random()->id,
+                'record_status_id' => $recordStatuses->random()->id,
+                'student_type_id' => $studentTypes->random()->id,
+                'inserted_by' => $superAdmin->id,
+            ]);
+        }
+    }
+}

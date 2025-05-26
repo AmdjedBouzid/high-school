@@ -1,0 +1,30 @@
+created:
+    - database/factories/RoleFactory.php
+    - database/factories/UserFactory.php
+    - database/factories/SupervisorInfoFactory.php
+    - database/factories/RecordStatusFactory.php
+    - database/factories/StudentTypeFactory.php
+    - database/factories/StudentFactory.php
+    - database/factories/AbsenceFactory.php
+    - database/migrations/2025_03_30_114923_create_roles_table.php
+    - database/migrations/2025_03_30_114924_create_users_table.php
+    - database/migrations/2025_03_30_114925_create_supervisor_infos_table.php
+    - database/migrations/2025_03_30_114926_create_record_statuses_table.php
+    - database/migrations/2025_03_30_114927_create_student_types_table.php
+    - database/migrations/2025_03_30_114928_create_students_table.php
+    - database/migrations/2025_03_30_114929_create_absences_table.php
+    - app/Models/Role.php
+    - app/Models/User.php
+    - app/Models/SupervisorInfo.php
+    - app/Models/RecordStatus.php
+    - app/Models/StudentType.php
+    - app/Models/Student.php
+    - app/Models/Absence.php
+models:
+    Role: { name: string }
+    User: { first_name: string, last_name: string, email: 'string unique', password: string, role_id: 'id nullable' }
+    SupervisorInfo: { user_id: id, phone_number: 'string nullable', sexe: 'enum:M,F nullable', address: 'string nullable' }
+    RecordStatus: { name: string }
+    StudentType: { name: string }
+    Student: { first_name: string, last_name: string, class: string, code: 'string unique', record_status_id: 'id nullable', student_type_id: 'id nullable' }
+    Absence: { student_id: id, day: date, class_index: string, address: 'string nullable' }
