@@ -86,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::prefix('assignment')->group(function () {
         Route::get('/{supervisor}', [StudentSupervisorController::class, 'show'])->name('assignments.show');
+        Route::get('detailed/{supervisor}', [StudentSupervisorController::class, 'showDetailed'])->name('assignments.show.detailed');
         Route::post('/', [StudentSupervisorController::class, 'store'])->name('assignments.store');
         Route::delete('/', [StudentSupervisorController::class, 'destroy'])->name('assignments.destroy');
     });
@@ -96,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // ! Absences
     Route::get('/absences', [AbsenceController::class, 'index'])->name('student.absences')->middleware('can:admin-level');
+    Route::get('/absence/last-update', [AbsenceController::class, 'lastUpdate'])->name('student.absences.lastUpdate');
     Route::prefix('absence')->middleware(['can:admin-level'])->group(function () {
         Route::get('/of-section', [AbsenceController::class, 'sectionAbsenceAtDay' ])->name('student.absences.get');
         Route::post('/add-start', [AbsenceController::class, 'startAbsence'])->name('student.absences.add.start');

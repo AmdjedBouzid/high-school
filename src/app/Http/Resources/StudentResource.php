@@ -16,7 +16,10 @@ class StudentResource extends JsonResource
             'last_name' => $this->last_name,
 
             'section' => $this->whenLoaded('section', fn() => $this->section->name),
+            'major' => $this->whenLoaded('section', fn() => $this->section->major->name),
+            'grade' => $this->whenLoaded('section', fn() => $this->section->major->grade->name),
             'code' => $this->code,
+            'sexe' => $this->sexe,
 
             'student_state' => $this->whenLoaded('recordStatus', fn() => $this->recordStatus->name),
             'student_type' => $this->whenLoaded('studentType', fn() => $this->studentType->name),

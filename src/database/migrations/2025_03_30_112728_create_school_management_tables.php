@@ -80,6 +80,7 @@ return new class extends Migration
             $table->string('first_name', 100);
             $table->string('last_name', 100);
             $table->string('code', 50)->unique();
+            $table->enum('sexe', ['M', 'F']);
 
             $table->foreignId('section_id')->nullable()->constrained('sections')->onDelete('cascade');
             $table->foreignId('student_type_id')->nullable()->constrained('student_types')->onDelete('set null');

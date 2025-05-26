@@ -1,10 +1,10 @@
 # Authorization: Bearer 1|1EPMcmEh4EXmDGtamfF0N6NHTkHn8WZmuao17hJ64f2b493f
 ###
-GET  http://127.0.0.1:8000/api/students HTTP/1.1
-# GET  http://192.168.139.56:8000/api/students HTTP/1.1
+# GET  http://127.0.0.1:8000/api/students HTTP/1.1
+GET  http://192.168.139.56:8000/api/students HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+Authorization: Bearer 2|kTOva80mnP2MERl4qeIjMdDzjPhEYYj3Cbyuyzc6eac6d377
 
 {
 }
@@ -23,12 +23,13 @@ Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
 POST  http://127.0.0.1:8000/api/student/create HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+Authorization: Bearer 2|kTOva80mnP2MERl4qeIjMdDzjPhEYYj3Cbyuyzc6eac6d377
 
 {
     "first_name": "Amdjed",
     "last_name": "Mrah",
     "section_id": 1,
+    "sexe" : "M",
     "student_state_id": 1,
     "student_type_id": 1
 }
@@ -56,10 +57,11 @@ Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
 
 ###
 
-GET  http://127.0.0.1:8000/api/student/1 HTTP/1.1
+GET  http://192.168.139.56:8000/api/student/141 HTTP/1.1
+# GET  http://127.0.0.1:8000/api/student/141 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 261|eyom6Xyrc91GrRULleArT2GoMZ4z7ljIWPXtK489f0e590ad
+Authorization: Bearer 2|kTOva80mnP2MERl4qeIjMdDzjPhEYYj3Cbyuyzc6eac6d377
 
 
  

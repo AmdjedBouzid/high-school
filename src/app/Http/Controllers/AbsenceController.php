@@ -7,6 +7,7 @@ use App\Models\Absence;
 use App\Models\AbsenceAction;
 use App\Models\Student;
 use App\Models\Section;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Resources\AbsenceResource;
 use App\Http\Resources\SectionResource;
@@ -160,7 +161,8 @@ class AbsenceController extends Controller
             'endtime' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
-        $absence = Absence::where('student_id', $request->student_id)
+        $absence = Absence::with('fromAction')
+            ->where('student_id', $request->student_id)
             ->where('from', $request->from_id)
             ->whereNull('to')
             ->first();
@@ -170,10 +172,20 @@ class AbsenceController extends Controller
                 "message" => "No active absence found for this student",
                 ], 422);
         }
+
+        $absence;
+        
+        if (strtotime($request->endtime) <= strtotime($absence->fromAction->time)) {
+            return response()->json([
+                "message" => "End time must be after the start time",
+            ], 422);
+        }
+        
         $absenceAction = AbsenceAction::create([
             'time' => $request->endtime,
             'made_by' => $request->user()->id,
         ]);
+
         $absence->to = $absenceAction->id;
         $absence->save();
         return response()->json([
@@ -213,6 +225,26 @@ class AbsenceController extends Controller
 
         return response()->json([
             "data" => $absences
+        ]);
+    }
+
+    public function lastUpdate(Request $request)
+    {
+        $lastUpdated = cache('absences_last_updated');
+
+        // $lastUpdate = DB::selectOne("
+        //     SELECT UPDATE_TIME 
+        //     FROM information_schema.tables 
+        //     WHERE TABLE_SCHEMA = 'laravel' 
+        //     AND TABLE_NAME = 'absences'
+        // ");
+
+        // $lastUpdateTime = $lastUpdate->UPDATE_TIME ?? null;
+
+        return response()->json([
+            "data" => [
+                "last_update" => $lastUpdated
+            ]
         ]);
     }
     

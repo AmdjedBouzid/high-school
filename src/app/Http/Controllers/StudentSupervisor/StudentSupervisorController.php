@@ -17,7 +17,22 @@ class StudentSupervisorController extends Controller
 
     public function show(Request $request,User $supervisor)
     {
-        if ( $request->user()->id != $supervisor->id || ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
+        if ( $request->user()->id != $supervisor->id && ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
+            return response()->json([
+                'message' => 'You cannot access this supervisor'
+            ], 422);
+        }
+
+        $students = $supervisor->students()
+            ->with(['studentState', 'studentType', 'insertedBy', "section"])
+            ->get();
+
+        return StudentResource::collection($students);
+    }
+
+    public function showDetailed(Request $request,User $supervisor)
+    {
+        if ( $request->user()->id != $supervisor->id && ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
             return response()->json([
                 'message' => 'You cannot access this supervisor'
             ], 422);
@@ -38,15 +53,13 @@ class StudentSupervisorController extends Controller
             'code' => 'required|string|exists:students,code',
             'user_id' => 'required|exists:users,id'
         ]);
-        
-        if ( $request->user()->id != $request->userId && ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
+
+        if ( $request->user()->id != $request->user_id && ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
             return response()->json([
                 'message' => 'You cannot assign a supervisor',
-                'user' => $request->userId,
-                'role' => $request->user()
             ], 422);
         }
-
+        
         
         $student = Student::where('code', $validated['code'])->first();
         
@@ -57,25 +70,29 @@ class StudentSupervisorController extends Controller
         }
         
         $student->supervisors()->attach($validated['user_id']);
-
+        
+        $student->load(["section","studentState","studentType"]);
+        
         return response()->json([
             'message' => 'Supervisor assigned successfully',
+            'student' => new StudentResource($student)
         ], 201);
     }
-
+    
     public function destroy(Request $request)
-    {
-        if ( $request->user()->id != $request->userId || ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
-            return response()->json([
-                'message' => 'You cannot access this supervisor'
-            ], 422);
-        }
-
+    {        
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'code' => 'required|string|exists:students,code',
         ]);
-
+        
+        if ( $request->user()->id != $request->user_id && ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
+            return response()->json([
+                'sendedfrom' => $request->user()->id,
+                'sendedfor' => $request->user_id,
+                'message' => 'You cannot access this supervisor'
+            ], 422);
+        }
         $student = Student::where('code', $validated['code'])->first();
 
         if (!$student->supervisors()->where('user_id', $validated['user_id'])->exists()) {
