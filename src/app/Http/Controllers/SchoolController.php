@@ -8,8 +8,9 @@ use App\Http\Resources\GradeResource;
 
 class SchoolController extends Controller
 {
-    public function gradeInfo(Grade $grade)
+    public function gradeInfo()
     {
-        return new GradeResource($grade->load(["majors.sections"]));
+        $grades = Grade::with('majors.sections')->get();
+        return GradeResource::collection($grades);
     }
 }

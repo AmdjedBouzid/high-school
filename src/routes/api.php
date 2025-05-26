@@ -81,27 +81,26 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/deleted', [StudentController::class, 'deletedStudents'])->name('student.deleted');
         Route::post('/code-regenerate/{student}', [StudentController::class, 'codeRegenerate'])->name('student.code.regenerate');
     });
-    
-    Route::get('/gradeinfo/{grade}', [SchoolController::class, 'gradeInfo'])->name('grade.info')->middleware('can:admin-level');
-    
-    Route::prefix('assignment')->middleware(['can:admin-level'])->group(function () {
+
+    Route::get('/gradeinfo', [SchoolController::class, 'gradeInfo'])->name('grade.info')->middleware('can:admin-level');
+
+    Route::prefix('assignment')->group(function () {
         Route::get('/{supervisor}', [StudentSupervisorController::class, 'show'])->name('assignments.show');
         Route::post('/', [StudentSupervisorController::class, 'store'])->name('assignments.store');
         Route::delete('/', [StudentSupervisorController::class, 'destroy'])->name('assignments.destroy');
     });
-    
+
     Route::apiResource('majors', MajorController::class)->middleware('can:admin-level');
 
     Route::apiResource('sections', SectionController::class)->middleware('can:admin-level');
-    
+
     // ! Absences
     Route::get('/absences', [AbsenceController::class, 'index'])->name('student.absences')->middleware('can:admin-level');
     Route::prefix('absence')->middleware(['can:admin-level'])->group(function () {
-        Route::get('/of-section', [AbsenceController::class, 'sectionAbsenceAtDay' ])->name('student.absences.get');
+        Route::put('/of-section', [AbsenceController::class, 'sectionAbsenceAtDay'])->name('student.absences.get');
         Route::post('/add-start', [AbsenceController::class, 'startAbsence'])->name('student.absences.add.start');
         Route::post('/add-end', [AbsenceController::class, 'endAbsence'])->name('student.absences.add.end');
         Route::delete('/delete-start', [AbsenceController::class, 'deleteStartAbsence'])->name('student.absences.delete.start');
         Route::delete('/delete-end', [AbsenceController::class, 'deleteEndAbsence'])->name('student.absences.delete.end');
     });
-
 });

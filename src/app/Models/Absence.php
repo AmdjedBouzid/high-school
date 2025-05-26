@@ -14,6 +14,11 @@ class Absence extends Model
         'student_id',
         'from',
         'to',
+        'absent_type',
+        'absent_description',
+        'presence_type',
+        'presence_description',
+
     ];
 
     public $timestamps = false;

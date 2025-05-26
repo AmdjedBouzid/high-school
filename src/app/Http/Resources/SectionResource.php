@@ -22,8 +22,29 @@ class SectionResource extends JsonResource
                 'grade_id' => $this->major->grade_id,
             ]),
 
-            'students' => $this->whenLoaded('students', fn() => StudentResource::collection($this->students)),
-            
+            'students' => $this->whenLoaded('students', function () {
+                return $this->students->map(function ($student) {
+                    return [
+                        'id' => $student->id,
+                        'first_name' => $student->first_name,
+                        'last_name' => $student->last_name,
+                        'absences' => $student->absences->map(function ($absence) {
+                            return [
+                                'id' => $absence->id,
+                                'from_id' => $absence->fromAction->id,
+                                'from_time' => $absence->fromAction->time,
+                                'to_id' => $absence->toAction?->id,
+                                'to_time' => $absence->toAction?->time,
+                                'absent_type' => $absence->absent_type,
+                                'absent_description' => $absence->absent_description,
+                                'presence_type' => $absence->presence_type,
+                                'presence_description' => $absence->presence_description,
+                            ];
+                        }),
+                    ];
+                });
+            }),
+
         ];
     }
 }

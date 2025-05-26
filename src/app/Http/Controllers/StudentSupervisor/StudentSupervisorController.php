@@ -15,10 +15,18 @@ use App\Http\Resources\SupervisorCollection;
 class StudentSupervisorController extends Controller
 {
 
-    public function show(User $supervisor)
+    public function show(Request $request, User $supervisor)
     {
+        // if ($request->user()->id != $supervisor->id || ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin'])) {
+        //     return response()->json([
+        //         'message' => 'You cannot access this supervisor'
+        //     ], 422);
+        // }
+
         $students = $supervisor->students()
-            ->with(['studentState', 'studentType', 'insertedBy', "section"])
+            ->with(['studentState', 'studentType', 'insertedBy', "section", "absences" => function ($query) {
+                $query->with(['fromAction', 'toAction']);
+            }])
             ->get();
 
         return StudentResource::collection($students);
@@ -30,19 +38,20 @@ class StudentSupervisorController extends Controller
             'code' => 'required|string|exists:students,code',
             'user_id' => 'required|exists:users,id'
         ]);
-        
+
         $student = Student::where('code', $validated['code'])->first();
-        
+
         if ($student->supervisors()->where('user_id', $validated['user_id'])->exists()) {
             return response()->json([
                 'message' => 'This supervisor is already assigned to the student'
             ], 422);
         }
-        
+
         $student->supervisors()->attach($validated['user_id']);
 
         return response()->json([
             'message' => 'Supervisor assigned successfully',
+            'student' => $student
         ], 201);
     }
 
@@ -67,5 +76,4 @@ class StudentSupervisorController extends Controller
             'message' => 'Supervisor removed successfully'
         ]);
     }
-
 }
