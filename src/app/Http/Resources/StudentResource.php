@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\AbsenceResource;
+use App\Http\Resources\SupervisorResource;
 
 class StudentResource extends JsonResource
 {
@@ -28,8 +29,11 @@ class StudentResource extends JsonResource
             'updated_at' => $this->updated_at,
 
             'inserted_by' => $this->whenLoaded('insertedBy', fn() => $this->insertedBy->username),
-            
-            'absences' => $this->whenLoaded('absences', function() {
+            'supervisors' => $this->whenLoaded('supervisors', fn() => SupervisorResource::collection($this->supervisors)),
+            'supervisors2' => SupervisorResource::collection($this->supervisors),
+            // 'absences' => $this->whenLoaded('absences'),
+
+            'absences' => $this->whenLoaded('absences', function () {
                 return AbsenceResource::collection($this->absences);
             })
 

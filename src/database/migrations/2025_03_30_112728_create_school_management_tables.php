@@ -86,30 +86,34 @@ return new class extends Migration
             $table->foreignId('student_type_id')->nullable()->constrained('student_types')->onDelete('set null');
             $table->foreignId('student_state_id')->nullable()->constrained('student_states')->onDelete('set null');
             $table->foreignId('inserted_by')->nullable()->constrained('users')->onDelete('set null');
-            
+
             $table->timestamps();
             $table->softDeletes();
         });
 
-        
+
         Schema::create('student_supervisors', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->primary(['user_id', 'student_id']);
             $table->softDeletes();
         });
-        
+
         Schema::create('absence_actions', function (Blueprint $table) {
             $table->id();
             $table->dateTime('time');
             $table->foreignId('made_by')->nullable()->constrained('users')->onDelete('set null');
         });
-        
+
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->foreignId('from')->constrained('absence_actions')->onDelete('cascade');
             $table->foreignId('to')->nullable()->constrained('absence_actions')->onDelete('set null');
+            $table->enum('absent_type', ['student', 'teacher']);
+            $table->text('absent_description')->nullable();
+            $table->enum('presence_type', ['justification', 'with supervisor', 'not needed'])->nullable()->default(null);
+            $table->text('presence_description')->nullable();
         });
     }
 

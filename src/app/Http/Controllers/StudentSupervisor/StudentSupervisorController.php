@@ -24,7 +24,9 @@ class StudentSupervisorController extends Controller
         }
 
         $students = $supervisor->students()
-            ->with(['studentState', 'studentType', 'insertedBy', "section"])
+            ->with(['studentState', 'studentType', 'insertedBy', "section", "absences" => function ($query) {
+                $query->with(['fromAction', 'toAction']);
+            }])
             ->get();
 
         return StudentResource::collection($students);
@@ -54,21 +56,21 @@ class StudentSupervisorController extends Controller
             'user_id' => 'required|exists:users,id'
         ]);
 
+
         if ( $request->user()->id != $request->user_id && ! in_array(strtolower($request->user()->role->name), ['admin', 'super-admin']) ){
             return response()->json([
                 'message' => 'You cannot assign a supervisor',
             ], 422);
         }
         
-        
         $student = Student::where('code', $validated['code'])->first();
-        
+
         if ($student->supervisors()->where('user_id', $validated['user_id'])->exists()) {
             return response()->json([
                 'message' => 'This supervisor is already assigned to the student'
             ], 422);
         }
-        
+
         $student->supervisors()->attach($validated['user_id']);
         
         $student->load(["section","studentState","studentType"]);
@@ -107,5 +109,4 @@ class StudentSupervisorController extends Controller
             'message' => 'Supervisor removed successfully'
         ]);
     }
-
 }

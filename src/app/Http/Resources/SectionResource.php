@@ -35,12 +35,16 @@ class SectionResource extends JsonResource
                                 'from_time' => $absence->fromAction->time,
                                 'to_id' => $absence->toAction?->id,
                                 'to_time' => $absence->toAction?->time,
+
+                                'absent_type' => $absence->absent_type,
+                                'absent_description' => $absence->absent_description,
+                                'presence_type' => $absence->presence_type,
+                                'presence_description' => $absence->presence_description,
                             ];
                         }),
                     ];
                 });
             }),
-            
         ];
     }
 }
