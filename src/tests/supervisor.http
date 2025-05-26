@@ -10,17 +10,18 @@ Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
 
 ###
 
-POST  http://127.0.0.1:8000/api/create-supervisor HTTP/1.1
+# POST  http://127.0.0.1:8000/api/create-supervisor HTTP/1.1
+POST  http://192.168.1.4:8000/api/create-supervisor HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
 {
     "first_name": "John",
     "last_name": "Doe",
-    "username": "john_zdoe12223",
-    "email": "john.doz22e@example.com",
-    "password": "password123",
-    "password_confirmation": "password123",
+    "username": "amdjed123",
+    "email": "amdjed123@example.com",
+    "password": "123456789",
+    "password_confirmation": "123456789",
     "phone_number": "0123456789",
     "address": "123 Main Street",
     "sexe": "M"
@@ -46,10 +47,10 @@ Accept: application/json
 
 ###
 
-GET  http://127.0.0.1:8000/api/supervisor/17 HTTP/1.1
+GET  http://192.168.1.4:8000/api/supervisor/7 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|g2Pw7XR7fqLvWXp67u1OvIg3B4I5kdjxILs3QLNC863ab2d7
+Authorization: Bearer 292|rAAM3olYQUjWqw7EdkAJPAZoR9wzr1cJuFwEQPIjc19931ae
 
 {
 
@@ -57,10 +58,10 @@ Authorization: Bearer 2|g2Pw7XR7fqLvWXp67u1OvIg3B4I5kdjxILs3QLNC863ab2d7
 
 
 ###
-PATCH  http://127.0.0.1:8000/api/supervisor/17 HTTP/1.1
+PATCH  http://127.0.0.1:8000/api/supervisor/7 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 2|g2Pw7XR7fqLvWXp67u1OvIg3B4I5kdjxILs3QLNC863ab2d7
+Authorization: Bearer 290|SCJEoaqVw0Wrppio64tTAtkxZkuL6YIsD1VdO0HEc7bc0f94
 
 {
     "role_id": 1

@@ -23,6 +23,7 @@ class StudentUpdateRequest extends FormRequest
             'section_id' => 'sometimes|exists:sections,id',
             'student_state_id' => 'sometimes|exists:student_states,id',
             'student_type_id' => 'sometimes|exists:student_types,id',
+            'sexe' => 'sometimes|in:M,F'
         ];
     }
 

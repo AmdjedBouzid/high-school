@@ -40,7 +40,7 @@ class SupervisorCreateRequest extends FormRequest
                 Rule::unique('users')
             ],
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
 
             'phone_number' => 'nullable|string|max:10|regex:/^0\d{9}$/',
             'address' => 'nullable|string|max:255',

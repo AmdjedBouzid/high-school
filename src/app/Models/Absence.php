@@ -23,6 +23,13 @@ class Absence extends Model
 
     public $timestamps = false;
 
+    protected static function booted()
+    {
+        static::created(fn () => cache()->put('absences_last_updated', now()));
+        static::updated(fn () => cache()->put('absences_last_updated', now()));
+        static::deleted(fn () => cache()->put('absences_last_updated', now()));
+    }
+
     public function student()
     {
         return $this->belongsTo(Student::class);

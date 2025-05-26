@@ -1,7 +1,21 @@
-GET  http://127.0.0.1:8000/api/assignment/1 HTTP/1.1
+# GET  http://127.0.0.1:8000/api/assignment/2 HTTP/1.1
+GET  http://192.168.139.56:8000/api/assignment/2 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+Authorization: Bearer 3|oc9zyACUqw5Ck3tzOCNd79LEKgXjLTT5Zt9HWiXke30b6264
+
+{
+
+}
+
+
+
+###
+# GET  http://127.0.0.1:8000/api/assignment/detailed/2 HTTP/1.1
+GET  http://192.168.139.56:8000/api/assignment/detailed/2 HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 3|oc9zyACUqw5Ck3tzOCNd79LEKgXjLTT5Zt9HWiXke30b6264
 
 {
 
@@ -10,13 +24,14 @@ Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
 
 ###
 POST  http://127.0.0.1:8000/api/assignment HTTP/1.1
+# POST  http://192.168.1.5:8000/api/assignment HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+Authorization: Bearer 3|oc9zyACUqw5Ck3tzOCNd79LEKgXjLTT5Zt9HWiXke30b6264
 
 {
-    "code" : "SDWRWJ1",
-    "user_id" : 1
+    "code" : "1",
+    "user_id" : 2
 }
 
 
@@ -24,11 +39,11 @@ Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
 DELETE  http://127.0.0.1:8000/api/assignment HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 3|FWGZNc0TnKjhaQDLcdRsI0r40qHR9ox943T4Cc2r6cfd574b
+Authorization: Bearer 300|1Dn6tEKUE37rqghQgYmI9zb5Jp9hN4cpSfeAefWZa38c8f06
 
 {
-    "code" : "SDWRWJ1",
-    "user_id" : 1
+    "code" : "010551B803",
+    "user_id" : 7
 }
 
 

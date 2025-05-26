@@ -1,3 +1,23 @@
+
+POST http://192.168.1.4:8000/api/create-supervisor HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "first_name": "Amdjed",
+    "last_name": "Super admin",
+    "username": "zamdjseddz_super_admin3",
+    "email": "zamdjdedz3ssss@gmail.com",
+    "password": "123456789",
+    "sexe": "M",
+    "phone_number": "0123456789",
+    "address": "123 Main St"
+}
+
+
+
+###
+# POST http://192.168.1.5:8000/api/create-supervisor HTTP/1.1
 POST http://127.0.0.1:8000/api/create-supervisor HTTP/1.1
 Content-Type: application/json
 Accept: application/json
@@ -5,35 +25,49 @@ Accept: application/json
 {
     "first_name": "Amdjed",
     "last_name": "Super admin",
-    "username": "amdjed_super_admin3",
-    "email": "amdjed3@gmail.com",
-    "password": "123456789",
-    "password_confirmation": "123456789",
+    "username": "a",
+    "email": "a@gmail.com",
+    "password": "0123456789",
+    "password_confirmation": "1",
     "sexe": "M",
     "phone_number": "0123456789",
-    "address": "123 Main St",
-    "role_id": 1
+    "address": "123 Main St"
 }
 
 
 ###
 
-POST http://127.0.0.1:8000/api/sanctum/token HTTP/1.1
+POST http://192.168.139.56:8000/api/login HTTP/1.1
+# POST http://127.0.0.1:8000/api/login HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
 {
-    "username": "mrahamdjed",
-    "password": "123456789",
-    "device_name": "Desktop"
+    "login": "a",
+    "password": "0123456789",
+    "deviceName": "Desktop"
 }
 
 
 ### 
-GET  http://127.0.0.1:8000/api/profile HTTP/1.1
+# GET  http://127.0.0.1:8000/api/profile HTTP/1.1
+GET  http://192.168.139.56:8000/api/profile HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 1|KYhZKy715dc5kHkpFQfZ5Kbif8LXNL5XtvfggYa68d940f30
+Authorization: Bearer 24|3TytXpKaCBswOJtUUxoN6dYGWYO0NmTnGifXiXXo3bf056c8
+
+
+{
+
+}
+
+
+### 
+# GET  http://127.0.0.1:8000/api/profile HTTP/1.1
+POST  http://192.168.139.56:8000/api/logout HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 25|NG0QqWboPNa1coEaWOMj2d8m6hRofSw8hHydRd6f8af8c34f
 
 
 {

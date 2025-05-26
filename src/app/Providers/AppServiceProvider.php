@@ -32,5 +32,9 @@ class AppServiceProvider extends ServiceProvider
             return $user->id === $target->id ||
                 in_array(strtolower($user->role->name), ['admin', 'super-admin']);
         });
+        Gate::define('owner-access', function (User $user, User $target) {
+            return $user->id === $target->id ||
+                in_array(strtolower($user->role->name), ['admin', 'super-admin']);
+        });
     }
 }

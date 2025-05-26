@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [SupervisorController::class, 'profile'])->name('auth.profile');
     Route::get('/supervisors', [SupervisorController::class, 'index'])->name('user.supervisor.index')->middleware('can:admin-level');
-    Route::get('/supervisor/{supervisor}', [SupervisorController::class, 'show'])->name('user.supervisor.show')->middleware('can:admin-level');
+    Route::get('/supervisor/{supervisor}', [SupervisorController::class, 'show'])->name('user.supervisor.show')->middleware('can:update-owner-level,supervisor');
     Route::patch('/supervisor/{supervisor}', [SupervisorController::class, 'update'])->name('user.supervisor.update')->middleware('can:update-owner-level,supervisor');
     Route::delete('/supervisor/{supervisor}', [SupervisorController::class, 'destroy'])->name('user.supervisor.destroy')->middleware('can:admin-level');
 
@@ -82,10 +82,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/code-regenerate/{student}', [StudentController::class, 'codeRegenerate'])->name('student.code.regenerate');
     });
 
+
     Route::get('/gradeinfo', [SchoolController::class, 'gradeInfo'])->name('grade.info')->middleware('can:admin-level');
 
     Route::prefix('assignment')->group(function () {
         Route::get('/{supervisor}', [StudentSupervisorController::class, 'show'])->name('assignments.show');
+        Route::get('detailed/{supervisor}', [StudentSupervisorController::class, 'showDetailed'])->name('assignments.show.detailed');
         Route::post('/', [StudentSupervisorController::class, 'store'])->name('assignments.store');
         Route::delete('/', [StudentSupervisorController::class, 'destroy'])->name('assignments.destroy');
     });
@@ -96,6 +98,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ! Absences
     Route::get('/absences', [AbsenceController::class, 'index'])->name('student.absences')->middleware('can:admin-level');
+    Route::get('/absence/last-update', [AbsenceController::class, 'lastUpdate'])->name('student.absences.lastUpdate');
     Route::prefix('absence')->middleware(['can:admin-level'])->group(function () {
         Route::put('/of-section', [AbsenceController::class, 'sectionAbsenceAtDay'])->name('student.absences.get');
         Route::post('/add-start', [AbsenceController::class, 'startAbsence'])->name('student.absences.add.start');
